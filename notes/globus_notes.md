@@ -15,7 +15,7 @@ It easily and reliably handles huge transfers (many terrabytes!). You simply ini
 
 ### Setup
 
-Parker and Kate have to requested mapping of our UW NetID's to the macc kopah storage account. We did this by sending an email to help@uw.edu with "Kopah + Globus" in the subject line.
+Parker and Kate requested mapping of our UW NetID's to the macc kopah storage account. We did this by sending an email to help@uw.edu with "Kopah + Globus" in the subject line.
 
 Once this is done you have to do a bit more installation, but the documentation in the hyak system is excellent.
 
