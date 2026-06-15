@@ -129,8 +129,6 @@ Of course you will need to add your own info here, not David's!
 
 ---
 
-go /home/$USER/.globusonline
-
 ### GUI
 
 The next step is to start using the web-based GUI for moving files across systems. This is a lot like a file transfer app like Transmit, but much more powerful. Most importantly it works with klone and kopah as well as your laptio and our servers.
