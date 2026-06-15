@@ -26,6 +26,7 @@ https://hyak.uw.edu/docs/storage/globus/
 Step 1: 1st login
 * Go to globus.org and "LOG IN" with University of Washington. Sign in will include Duo 2-Factor Authentication. 
 * Using the File Manager - Collection Search tab look for "UW Hyak Klone" and then entered our macc group path, /mmfs1/gscratch/macc/ (needed to click thru 2 onscreen steps to verify my credentials). You should see our files on klone now. Create bookmark once working. 
+* Repeat search for "UW Hyak Kopah"; follow onscreen prompts to verify identity 
 
 Step 2: Setting up local endpoint 
 * On my laptop, I downloaded Globus connect personal for Mac and followed prompts here: https://docs.globus.org/globus-connect-personal/install/mac/ 
