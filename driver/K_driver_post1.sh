@@ -7,7 +7,7 @@
 #SBATCH --ntasks-per-node=3
 
 ## Walltime 
-#SBATCH --time=03:00:00
+#SBATCH --time=02:00:00
 
 ## Set memory use. Each slice (32 cores) has 256G
 #SBATCH --mem=128G
