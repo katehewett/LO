@@ -10,6 +10,7 @@ import fsspec
 import xarray as xr
 from pathlib import Path
 from time import time
+import sys
 
 # Icechunk related imports
 import icechunk
@@ -106,6 +107,7 @@ except Exception as e:
     set_repo = set()
 
 print(f"set_repo: {len(set_repo)} dates found.")
+sys.stdout.flush()
 
 # ---------------------------------------------------------------
 
@@ -127,6 +129,7 @@ nos_urls = []
 for f in nos_files:
     nos_path = f's3://{f}'
     nos_urls.append(nos_path)
+sys.stdout.flush()
 
 # ---------------------------------------------------------------
 
@@ -143,6 +146,8 @@ nos_list = [
 print('created nos_list (%0.1f sec)' % (time()-tt0))
 # this is the slow step (100 sec for 25 files)
 
+sys.stdout.flush()
+
 # ---------------------------------------------------------------
 
 # Concatenate the virtual datasets
@@ -156,6 +161,8 @@ combined_nos = xr.concat(
 
 print('done')
 # this is fast
+
+sys.stdout.flush()
 
 # ---------------------------------------------------------------
 
@@ -198,6 +205,8 @@ if ds_final is not None:
     
 else:
     print("Nothing to append.")
+
+sys.stdout.flush()
 
 # ---------------------------------------------------------------
 
