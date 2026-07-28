@@ -25,8 +25,8 @@ from obstore.store import S3Store
 
 gtagex = 'cas7_t2_x11b'
 list_type = 'hourly' # hourly (history files) or daily (average files)
-ds0 = '' # first day to start an empty repo ('' to use existing repo)
-ds1 = '2026.01.03' # last day to append to repo
+ds0 = '2026.01.04' # first day to start an empty repo ('' to use existing repo)
+ds1 = '2026.12.31' # last day to append to repo
 
 # Ignore some warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -120,93 +120,101 @@ print("Scanning S3 for liveocean files...")
 # day 1
 #nos_files = fs.glob(f'{bucket_url}/LO_roms/cas7_t2_x11b/f2026.01.01/ocean_his*.nc')
 
-# day 2+
-nos_files = fs.glob(f'{bucket_url}/LO_roms/{gtagex}/f{ds1}/ocean_his*.nc')
-nos_files = nos_files[1:] # drop hour zero because it was done in previous day
+# loop over days
 
+dt_list = pd.date_range(ds0,ds1)
 
-nos_urls = []
-for f in nos_files:
-    nos_path = f's3://{f}'
-    nos_urls.append(nos_path)
-sys.stdout.flush()
+for dt in dt_list:
+    dt_str = dt.strftime('%Y.%m.%d')
+    print(dt_str)
+    sys.stdout.flush()
 
-# ---------------------------------------------------------------
+    # day 2+
+    nos_files = fs.glob(f'{bucket_url}/LO_roms/{gtagex}/f{dt_str}/ocean_his*.nc')
+    nos_files = nos_files[1:] # drop hour zero because it was done in previous day
 
-# --- Process NOS ---
+    nos_urls = []
+    for f in nos_files:
+        nos_path = f's3://{f}'
+        nos_urls.append(nos_path)
+    sys.stdout.flush()
 
-tt0 = time()
+    # ---------------------------------------------------------------
 
-print(f"Virtualizing {len(nos_urls)} NOS files...")
+    # --- Process NOS ---
 
-nos_list = [
-    open_virtual_dataset(url, parser=parser, registry=registry, loadable_variables=['ocean_time'])
-    for url in nos_urls
-]
-print('created nos_list (%0.1f sec)' % (time()-tt0))
-# this is the slow step (100 sec for 25 files)
+    tt0 = time()
 
-sys.stdout.flush()
+    print(f"Virtualizing {len(nos_urls)} NOS files...")
 
-# ---------------------------------------------------------------
+    nos_list = [
+        open_virtual_dataset(url, parser=parser, registry=registry, loadable_variables=['ocean_time'])
+        for url in nos_urls
+    ]
+    print('created nos_list (%0.1f sec)' % (time()-tt0))
+    # this is the slow step (50 sec for 25 files on klone)
 
-# Concatenate the virtual datasets
+    sys.stdout.flush()
 
-# Avoid a warning message
-xr.set_options(use_new_combine_kwarg_defaults=True)
+    # ---------------------------------------------------------------
 
-combined_nos = xr.concat(
-    nos_list, dim="ocean_time", coords="minimal", compat="override", combine_attrs="override"
-)
+    # Concatenate the virtual datasets
 
-print('done')
-# this is fast
+    # Avoid a warning message
+    xr.set_options(use_new_combine_kwarg_defaults=True)
 
-sys.stdout.flush()
+    combined_nos = xr.concat(
+        nos_list, dim="ocean_time", coords="minimal", compat="override", combine_attrs="override"
+    )
 
-# ---------------------------------------------------------------
+    print('done')
+    # this is fast
 
-# Append the dataset to the repo
+    sys.stdout.flush()
 
-ds_final = combined_nos
+    # ---------------------------------------------------------------
 
-if ds_final is not None:
-    # Ensure we have a valid repo object
-    # Note I had to delete the existing repo to make this work.
-    if repo is None:
-        repo = icechunk.Repository.create(storage, config, authorize_virtual_chunk_access=credentials)
-        initial_session = repo.writable_session("main")
+    # Append the dataset to the repo
 
-        # Append
-        print(f"Writing {len(ds_final.ocean_time)} time steps to Icechunk...")
-        ds_final.virtualize.to_icechunk(initial_session.store)
-    
-        # Commit
-        msg = f"Initialized with forecast data:"# {new_dates[0]} to {new_dates[-1]}"
-        initial_session.commit(msg)
-        print(f"Commit successful: '{msg}'")
-    # Create Writable Session
+    ds_final = combined_nos
+
+    if ds_final is not None:
+        # Ensure we have a valid repo object
+        # Note I had to delete the existing repo to make this work.
+        if repo is None:
+            repo = icechunk.Repository.create(storage, config, authorize_virtual_chunk_access=credentials)
+            initial_session = repo.writable_session("main")
+
+            # Append
+            print(f"Writing {len(ds_final.ocean_time)} time steps to Icechunk...")
+            ds_final.virtualize.to_icechunk(initial_session.store)
+        
+            # Commit
+            msg = f"Initialized with forecast data:"# {new_dates[0]} to {new_dates[-1]}"
+            initial_session.commit(msg)
+            print(f"Commit successful: '{msg}'")
+        # Create Writable Session
+        else:
+            append_session = repo.writable_session("main")
+
+            # Append
+            print(f"Appending {len(ds_final.ocean_time)} time steps to Icechunk...")
+            ds_final.virtualize.to_icechunk(append_session.store, append_dim="ocean_time")
+        
+            # Commit
+            msg = f"Appended forecast data:"# {new_dates[0]} to {new_dates[-1]}"
+            append_session.commit(msg)
+            print(f"Commit successful: '{msg}'")
+
+        # Verify History
+        history = repo.ancestry(branch="main")
+        latest = next(history)
+        print(f"Latest Commit [{latest.written_at}]: {latest.message}")
+        
     else:
-        append_session = repo.writable_session("main")
+        print("Nothing to append.")
 
-        # Append
-        print(f"Appending {len(ds_final.ocean_time)} time steps to Icechunk...")
-        ds_final.virtualize.to_icechunk(append_session.store, append_dim="ocean_time")
-    
-        # Commit
-        msg = f"Appended forecast data:"# {new_dates[0]} to {new_dates[-1]}"
-        append_session.commit(msg)
-        print(f"Commit successful: '{msg}'")
-
-    # Verify History
-    history = repo.ancestry(branch="main")
-    latest = next(history)
-    print(f"Latest Commit [{latest.written_at}]: {latest.message}")
-    
-else:
-    print("Nothing to append.")
-
-sys.stdout.flush()
+    sys.stdout.flush()
 
 # ---------------------------------------------------------------
 
