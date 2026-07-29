@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## run using a command of the form
-## sbatch ./run_make_icechunk_repo.sh
+## sbatch ./run_make_icechunk_repo.sh &
 
 ## Group
 #SBATCH -A macc

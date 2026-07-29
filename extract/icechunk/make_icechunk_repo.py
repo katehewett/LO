@@ -25,8 +25,8 @@ from obstore.store import S3Store
 
 gtagex = 'cas7_t2_x11b'
 list_type = 'hourly' # hourly (history files) or daily (average files)
-ds0 = '2026.01.04' # first day to start an empty repo ('' to use existing repo)
-ds1 = '2026.12.31' # last day to append to repo
+ds0 = '2024.01.01' # first day to start an empty repo ('' to use existing repo?)
+ds1 = '2024.12.31' # last day to append to repo
 
 # Ignore some warnings
 warnings.filterwarnings("ignore", category=UserWarning)
@@ -42,7 +42,7 @@ os.environ['AWS_RESPONSE_CHECKSUM_VALIDATION']='when_required'
 # Configuration
 storage_endpoint = "https://s3.kopah.uw.edu"
 storage_bucket = "liveocean-pmacc"
-storage_name = 'icechunk-test-2'
+storage_name = 'icechunk-repo'
 bucket_url = f"s3://{storage_bucket}"
 # Note the use of f-strings in this code. Clean.
 
@@ -56,7 +56,7 @@ fs = fsspec.filesystem('s3', anon=False, endpoint_url=storage_endpoint,
 
 storage = icechunk.s3_storage(
     bucket=storage_bucket,
-    prefix=f"icechunk/{storage_name}",
+    prefix=f"icechunk_{gtagex}/{storage_name}",
     from_env=True,
     endpoint_url=storage_endpoint,
     region='not-used',
@@ -117,9 +117,6 @@ print("Scanning S3 for liveocean files...")
 # Note the name "nos" is just leftover from the version of this code I got from
 # Rich Signell around 6/2026. We retain it here to avoid extra editing.
 
-# day 1
-#nos_files = fs.glob(f'{bucket_url}/LO_roms/cas7_t2_x11b/f2026.01.01/ocean_his*.nc')
-
 # loop over days
 
 dt_list = pd.date_range(ds0,ds1)
@@ -129,9 +126,10 @@ for dt in dt_list:
     print(dt_str)
     sys.stdout.flush()
 
-    # day 2+
     nos_files = fs.glob(f'{bucket_url}/LO_roms/{gtagex}/f{dt_str}/ocean_his*.nc')
-    nos_files = nos_files[1:] # drop hour zero because it was done in previous day
+
+    if dt > dt_list[0]:
+        nos_files = nos_files[1:] # drop hour zero because it was done in previous day
 
     nos_urls = []
     for f in nos_files:
