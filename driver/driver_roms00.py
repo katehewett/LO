@@ -546,7 +546,9 @@ while dt <= dt1:
         if args.to_kopah:
             tt0 = time()
             # cmd_list = ['s3cmd','sync',str(roms_out_dir),'s3://liveocean-forecast/','--acl-public']
-            cmd_list = ['s5cmd','sync','--acl','public-read',str(roms_out_dir),'s3://liveocean-forecast/']
+            #cmd_list = ['s5cmd','sync','--acl','public-read',str(roms_out_dir),'s3://liveocean-forecast/']
+            s5cmd_bin = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'
+            cmd_list = [s5cmd_bin,'sync','--acl','public-read',str(roms_out_dir),'s3://liveocean-forecast/']
             # RESULT 2026.02.11 s5cmd was MUCH faster, 17 sec vs. 192 sec!!!
             proc = Po(cmd_list, stdout=Pi, stderr=Pi)
             stdout, stderr = proc.communicate()
