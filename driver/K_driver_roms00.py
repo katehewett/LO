@@ -270,7 +270,11 @@ while dt <= dt1:
             else:
                 force_choice = force_dict[force]
                 bucket_name = 'liveocean-' + Ldir['local_user']
-                cmd_list = ['s5cmd','sync',
+                #cmd_list = ['s5cmd','sync',
+                #    's3://'+bucket_name+'/LO_output/forcing/'+Ldir['gridname']+'/'+f_string+'/'+force_choice+'/*',
+                #    str(force_dir)+'/'+force_choice+'/']
+                s5cmd_bin = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'
+                cmd_list = [s5cmd_bin,'sync',
                     's3://'+bucket_name+'/LO_output/forcing/'+Ldir['gridname']+'/'+f_string+'/'+force_choice+'/*',
                     str(force_dir)+'/'+force_choice+'/']
                 proc = Po(cmd_list, stdout=Pi, stderr=Pi)
@@ -476,12 +480,16 @@ while dt <= dt1:
             tt0 = time()
             bucket_name = 'liveocean-' + Ldir['local_user']
             # make the bucket if needed
-            cmd_list = ['s5cmd','mb','s3://'+bucket_name]
+            #cmd_list = ['s5cmd','mb','s3://'+bucket_name]
+            s5cmd_bin = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'
+            cmd_list = [s5cmd_bin,'mb','s3://'+bucket_name]
             proc = Po(cmd_list, stdout=Pi, stderr=Pi)
             stdout, stderr = proc.communicate()
             messages(stdout, stderr, 'Create Kopah bucket:', args.verbose)
             # sync to the bucket, using the standard LO directory structure
-            cmd_list = ['s5cmd','sync',str(roms_out_dir)+'/*',
+            #cmd_list = ['s5cmd','sync',str(roms_out_dir)+'/*',
+            #    's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
+            cmd_list = [s5cmd_bin,'sync',str(roms_out_dir)+'/*',
                 's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
             proc = Po(cmd_list, stdout=Pi, stderr=Pi)
             stdout, stderr = proc.communicate()
