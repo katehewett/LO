@@ -1,6 +1,11 @@
 """
 Code to test speed of accessing netcdf vs. zarr arrays.
 
+RESULT:
+The direct access using xr has variable performance (2-25 sec). Need to test more.
+
+Couldn't get zarr to work at all.
+
 """
 
 from time import time
@@ -13,11 +18,11 @@ local = False
 
 if local:
     # local version
-    fn0 = Ldir['roms_out'] / 'cas7_t2_x11b' / 'f2026.05.01' / 'ocean_his_0002.nc'
+    fn0 = Ldir['roms_out'] / 'cas7_t2_x11b' / 'f2026.05.01' / 'ocean_his_0001.nc'
     fn1 = '/gscratch/macc/parker/tmp/h_01.zarr'
 else:
     # s3 version with direct access
-    fn0 = 's3://liveocean-pmacc/tmp/ocean_his_0002.nc'
+    fn0 = 's3://liveocean-pmacc/tmp/ocean_his_0001.nc'
     fn1 = 's3://liveocean-test/cas7_t2_x11b_zarr/f2026.05.01/ocean_his_0001.zarr'
     fn1alt = 'https://s3.kopah.uw.edu/liveocean-test/cas7_t2_x11b_zarr/f2026.05.01/ocean_his_0001.zarr'
     storage_options = {'client_kwargs': {'endpoint_url': 'https://s3.kopah.uw.edu'}, 'anon': True}
