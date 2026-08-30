@@ -89,7 +89,7 @@ in_dir = wrf_dir / d_str00
 if get_from_kopah:
     Lfun.make_dir(in_dir)
     in_dir_to_clean = in_dir
-    bucket_name = 'liveocean-pmacc' # everyone in the group can use this
+    bucket_name = 'liveocean-kmhewett' # everyone in the group can use this
     cmd_list = ['s5cmd','sync',
         's3://'+bucket_name+'/LO_data/wrf/'+d_str00+'/*',
         str(in_dir)+'/']

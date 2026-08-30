@@ -17,7 +17,7 @@
 
 #SBATCH --cpus-per-task=10
 
-source /gscratch/macc/parker/miniconda3/etc/profile.d/conda.sh
+source /gscratch/macc/kmhewett/miniconda3/etc/profile.d/conda.sh
 
 conda activate loenv
 
@@ -35,7 +35,7 @@ export NUMEXPR_NUM_THREADS=$SLURM_CPUS_PER_TASK
 # echo -e "Pre: $(date)\n" > /gscratch/macc/parker/LO/driver/sbatch_test.txt
 # conda list >> /gscratch/macc/parker/LO/driver/sbatch_test.txt
 
-LOd=/gscratch/macc/parker/LO/driver
+LOd=/gscratch/macc/kmhewett/LO/driver
 
 python3 $LOd/driver_forcing00.py -g cas7 -r forecast -f tide01 -k True > $LOd/tide01_cas7.log
 
