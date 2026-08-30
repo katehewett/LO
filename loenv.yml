@@ -51,8 +51,11 @@ dependencies:
   - pip:
     - -e ../LO/lo_tools lo_tools # package of local modules 
     - s3cmd >= 2.4.0 # AWS S3 tools: this one is linux command line
+    - pandas # kate addition
+    - pytz # kate addition
   # and some non-python tools
   - ffmpeg
   - nco
   - s5cmd
+
   
