@@ -128,9 +128,9 @@ for exp in exp_list:
 
     # copy file to kopah
     try:
-        url_str = Lfun.file_to_kopah(out_json_dict0[exp],'liveocean-web')
+        url_str = Lfun.file_to_kopah(out_json_dict0[exp],'liveocean-web-test')
         print(url_str)
-        url_str = Lfun.file_to_kopah(out_json_dict1[exp],'liveocean-web')
+        url_str = Lfun.file_to_kopah(out_json_dict1[exp],'liveocean-web-test')
         print(url_str)
         result = 'success'
     except Exception as e:
