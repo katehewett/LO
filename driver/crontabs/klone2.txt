@@ -30,27 +30,7 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 50 06 * * * source ~/.bashrc; mail -s 'Kates version post_K1' pmacc@uw.edu < $LOd/post_K1.log
 50 06 * * * source ~/.bashrc; mail -s 'Kates version post_K1' kmhewett@uw.edu < $LOd/post_K1.log
 
-# nested forecasts
-
-30 07 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g wgh2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done w11 < /dev/null > $LOd/wgh2_forecast.log
-00 17 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g wgh2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done w11 < /dev/null > $LOd/wgh2_forecast_2.log
-# post processing
-# 00 08 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_post2.sh
-# emails
-00 09 * * * source ~/.bashrc; mail -s 'Kates version wgh forecast klone' pmacc@uw.edu < $LOd/wgh2_forecast.log
-01 09 * * * source ~/.bashrc; mail -s 'Kates version wgh forecast klone' kmhewett@uw.edu < $LOd/wgh2_forecast.log
-00 10 * * * source ~/.bashrc; mail -s 'Kates version post_K2' pmacc@uw.edu < $LOd/post_K2.log
-00 10 * * * source ~/.bashrc; mail -s 'Kates version post_K2' kmhewett@uw.edu < $LOd/post_K2.log
-
-00 09 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g oly2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done o11 < /dev/null > $LOd/oly2_forecast.log
-00 19 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g oly2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done o11 < /dev/null > $LOd/oly2_forecast_2.log
-# post processing
-# 00 10 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_post3.sh
-# emails
-00 11 * * * source ~/.bashrc; mail -s 'Kates version oly forecast klone' pmacc@uw.edu < $LOd/oly2_forecast.log
-01 11 * * * source ~/.bashrc; mail -s 'Kates version oly forecast klone' kmhewett@uw.edu < $LOd/oly2_forecast.log
-30 11 * * * source ~/.bashrc; mail -s 'Kates version post_K3' pmacc@uw.edu < $LOd/post_K3.log
-30 11 * * * source ~/.bashrc; mail -s 'Kates version post_K3' kmhewett@uw.edu < $LOd/post_K3.log
+# skipped nested forecasts for now 
 
 # backup runs of forcing generation
 
@@ -62,7 +42,7 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 30 21 * * * source ~/.bashrc; $LOd/wrf_to_kopah.sh
 
 # create forecast forcing (really should have a way to see if this is already done)
-15 22 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_forecast_forcing.sh
+40 21 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_forecast_forcing.sh
 
 # refresh this crontab
 00 12 * * * crontab <<< $(crontab -l)
