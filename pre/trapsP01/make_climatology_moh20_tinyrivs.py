@@ -135,6 +135,8 @@ mask_2012_2014 = (moh20_river_data_ds['date'] > np.datetime64('2012-07-31')) & (
 
 # replace the 2012-2014 flow data with nan for the shifted years
 for riv in shifted:
+    filtered = moh20_river_data_ds.where(moh20_river_data_ds["name"] == riv, drop=True)["source"] #kate add check
+    print(f"River: {riv}, Matches found: {filtered.values}") #kate add check
     # get river index
     riv_index = int(moh20_river_data_ds.where(moh20_river_data_ds['name'] == riv, drop=True)['source'])
     # replace 2012-2014 flow data with nans
