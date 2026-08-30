@@ -30,8 +30,13 @@
 #SBATCH --job-name='frc_back'
 
 # We defined and exported conda_source and LOd in .bashrc
-source ${conda_source}
+# ask Parker about this on Monday (Kate added lines 35, 39)
+#source ${conda_source}
+source /gscratch/macc/kmhewett/miniconda3/etc/profile.d/conda.sh
+
 conda activate loenv
+
+LOd=/gscratch/macc/kmhewett/LO/driver
 
 # These exports, along with the cpus-per-task set above
 # (and workers=10 in the nearest neighbor code, e.g. in tracker2)

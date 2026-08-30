@@ -136,8 +136,8 @@ def copy_to_kopah(Ldir, out_fn, subdir=''):
     """
     if Ldir['testing'] == False:
     
-        share_dir = 's3://liveocean-share/' + 'f' + Ldir['date_string'] + '/'
-    
+        #share_dir = 's3://liveocean-share/' + 'f' + Ldir['date_string'] + '/'
+        share_dir = 's3://kmh-share/' + 'f' + Ldir['date_string'] + '/'
         is_done = False
         try:
             # (ii) copy the extraction to there
