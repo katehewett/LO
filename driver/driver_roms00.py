@@ -55,6 +55,18 @@ if str(pth) not in sys.path:
     sys.path.append(str(pth))
 import Lfun
 
+# Resolve your keys and set the dummy region 
+# for case with Kate . can we loop this into get lo info?? 
+current_user = os.environ.get('USER')
+if current_user=='kmhewett':
+    s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('MACC_KEY', '')      # Kate has two sets of access keys
+    s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('MACC_SECRET', '')
+    s5cmd_env['AWS_REGION']            = 'us-west-2'
+else: 
+    s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('access_key', '')    # generic user setup in macc group
+    s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('secret_key', '')
+    s5cmd_env['AWS_REGION']            = 'us-west-2'
+
 # >>> START Command Line Arguments <<<
 
 # Arguments without defaults are required.
@@ -548,12 +560,10 @@ while dt <= dt1:
             # cmd_list = ['s3cmd','sync',str(roms_out_dir),'s3://liveocean-forecast/','--acl-public']
             #cmd_list = ['s5cmd','sync','--acl','public-read',str(roms_out_dir),'s3://liveocean-forecast/']
             s5cmd_bin = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'
-            #cmd_list = [s5cmd_bin,'sync','--acl','public-read',str(roms_out_dir),'s3://liveocean-forecast/']
-            # need to fix this so looks for profile = 'hewett' 'macc' (or whoever is running this driver)
-            # i have 2 profiles and parker has 1. so his doens't have profile. FIX! 
-            cmd_list = [s5cmd_bin,'--profile','macc','sync','--acl','public-read',str(roms_out_dir),'s3://liveocean-forecast/']
+            cmd_list = [s5cmd_bin,'--endpoint-url','https://s3.kopah.uw.edu',
+                        'sync','--acl','public-read',str(roms_out_dir),'s3://liveocean-forecast/']
             # RESULT 2026.02.11 s5cmd was MUCH faster, 17 sec vs. 192 sec!!!
-            proc = Po(cmd_list, stdout=Pi, stderr=Pi)
+            proc = Po(cmd_list, stdout=Pi, stderr=Pi,env=s5cmd_env)
             stdout, stderr = proc.communicate()
             messages(stdout, stderr, 'To kopah messages:', args.verbose)
             print(' - time to copy to kopah = %d sec' % (time()-tt0))
