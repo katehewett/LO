@@ -6,6 +6,7 @@
 # Kate's has MACC_KEY and HEWETT_KEY 
 export AWS_ACCESS_KEY_ID=$MACC_KEY
 export AWS_SECRET_ACCESS_KEY=$MACC_SECRET
+export AWS_REGION='us-west-2'
 
 dstr=`date -u +%Y%m%d`00
 indir0=/gscratch/macc/kmhewett/LO_data/wrf/
