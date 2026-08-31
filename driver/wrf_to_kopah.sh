@@ -2,6 +2,11 @@
 
 # code to copy today's WRF forecast files to kopah
 
+# user needs to update this based on their .bashrc 
+# Kate's has MACC_KEY and HEWETT_KEY 
+export AWS_ACCESS_KEY_ID=$MACC_KEY
+export AWS_SECRET_ACCESS_KEY=$MACC_SECRET
+
 dstr=`date -u +%Y%m%d`00
 indir0=/gscratch/macc/kmhewett/LO_data/wrf/
 indir=$indir0$dstr/

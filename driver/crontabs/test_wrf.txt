@@ -3,5 +3,5 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 
 PATH=/usr/local/bin:/usr/bin
 
-52 08 * * * source ~/.bashrc; $LOd/wrf_to_kopah.sh > $LOd/cron_wrf_to_kopah.log 2>&1
+02 09 * * * source ~/.bashrc; $LOd/wrf_to_kopah.sh > $LOd/cron_wrf_to_kopah.log 2>&1
 
