@@ -13,6 +13,7 @@ import os, sys, shutil
 from pathlib import Path 
 from datetime import datetime, timedelta
 import importlib.util
+import subprocess
 
 # get initial version of Ldir when this module is loaded
 upth = Path(__file__).absolute().parent.parent.parent.parent / 'LO_user'
@@ -409,6 +410,52 @@ def file_to_kopah(fn, bucket_name, public=True):
     url_str = 'https://s3.kopah.uw.edu/'+bucket_name+'/'+fn.split('/')[-1]
     return url_str
 
+def get_cluster_storage_env(account_prefix="MACC"):
+    """
+    Parses local shell configurations (~/.bashrc or ~/.bash_profile) to extract 
+    Kopah credential sets without exposing them to GitHub or crashing in cron.
+    Should work for both s5cmd and s3 commands??
+
+    Input:
+        account_prefix (str): The prefix of your keys in bashrc (or bash_profile) 
+        (e.g., 'HEWETT' or 'MACC')
+        default for group = MACC, only ecmwf uses HEWETT
+        
+    Returns:
+        dict: A modified environment dictionary containing the requested AWS keys.
+    
+    Example calls: 
+        hewett_env = get_cluster_storage_env(account_prefix="HEWETT")
+        macc_env   = get_cluster_storage_env(account_prefix="MACC")
+
+    """
+    
+    # 1. Start with a safe copy of the current system environment variables
+    storage_env = os.environ.copy()
+    
+    # 2. Scan for shell files across different machine configurations
+    possible_files = [os.path.expanduser('~/.bashrc'), os.path.expanduser('~/.bash_profile')]
+    extracted_keys = {}
+    
+    for file_path in possible_files:
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                for line in f:
+                    # Look specifically for lines containing your target keys
+                    if any(k in line for k in ['MACC_KEY', 'MACC_SECRET', 'HEWETT_KEY', 'HEWETT_SECRET']):
+                        clean_line = line.replace('export ', '').strip()
+                        if '=' in clean_line:
+                            key, val = clean_line.split('=', 1)
+                            extracted_keys[key.strip()] = val.strip('"\'')
+            if extracted_keys:
+                break # Stop searching if we successfully populated the keys
+                
+    # 3. Inject the keys that BOTH s3 and s5cmd expect into our environment copy
+    storage_env['AWS_ACCESS_KEY_ID'] = extracted_keys.get(f'{account_prefix.upper()}_KEY', '')
+    storage_env['AWS_SECRET_ACCESS_KEY'] = extracted_keys.get(f'{account_prefix.upper()}_SECRET', '')
+    
+    return storage_env
+
 if __name__ == '__main__':
     # TESTING: run Lfun will execute these (don't import Lfun first)
     
@@ -477,5 +524,4 @@ if __name__ == '__main__':
         print(' TESTING file_to_kopah() file to mis-named bucket: throws error '.center(60,'-'))
         url_str = file_to_kopah(fn, 'liveocean_test')
         fn.unlink(missing_ok=True)
-    
     

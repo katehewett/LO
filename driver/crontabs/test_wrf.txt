@@ -1,0 +1,7 @@
+LANG=en-US.UTF-8
+LOd=/gscratch/macc/kmhewett/LO/driver
+
+PATH=/usr/local/bin:/usr/bin
+
+00 09 * * * source ~/.bashrc; $LOd/wrf_to_kopah.sh
+
