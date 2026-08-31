@@ -3,8 +3,6 @@
 # code to copy today's WRF forecast files to kopah
 
 # Map your unique profile keys to standard s5cmd variables
-# test in klone by echo "Key check: $MACC_KEY" 
-# echo "Key check: $"secret_key"
 if [[ "$USER" == *"kmhewett"* ]]; then
     export AWS_ACCESS_KEY_ID=$MACC_KEY
     export AWS_SECRET_ACCESS_KEY=$MACC_SECRET
