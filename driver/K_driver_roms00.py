@@ -34,14 +34,15 @@ import Lfun
 # Resolve your keys and set the dummy region 
 # for case with Kate . can we loop this into get lo info?? 
 current_user = os.environ.get('USER')
+
 if current_user=='kmhewett':
     s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('MACC_KEY', '')      # Kate has two sets of access keys
     s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('MACC_SECRET', '')
-    s5cmd_env['AWS_REGION']            = 'us-west-2'
 else: 
     s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('access_key', '')    # generic user setup in macc group
     s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('secret_key', '')
-    s5cmd_env['AWS_REGION']            = 'us-west-2' 
+
+s5cmd_env['AWS_REGION']            = 'us-west-2'
 
 # >>> START Command Line Arguments <<<
 
