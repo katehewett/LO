@@ -33,7 +33,7 @@ import Lfun
 
 # Resolve your keys and set the dummy region 
 # for case with Kate . can we loop this into get lo info?? 
-s5cmd_env = {}
+"""s5cmd_env = {}
 current_user = os.environ.get('USER')
 
 if current_user=='kmhewett' or current_user=='katehewett':
@@ -43,7 +43,13 @@ else:
     s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('AWS_ACCESS_KEY_ID', '')    # generic user setup in macc group
     s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
 
-s5cmd_env['AWS_REGION']            = 'us-west-2'
+s5cmd_env['AWS_REGION']            = 'us-west-2'"""
+
+current_user = os.environ.get('USER')
+
+if current_user=='kmhewett' or current_user=='katehewett':
+    load_macc()
+
 
 # >>> START Command Line Arguments <<<
 
@@ -505,7 +511,7 @@ while dt <= dt1:
             #    's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
             cmd_list = [s5cmd_bin,'--endpoint-url','https://s3.kopah.uw.edu','sync',str(roms_out_dir)+'/*',
                 's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
-            proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
+            proc = Po(cmd_list, stdout=Pi, stderr=Pi)
             stdout, stderr = proc.communicate()
             messages(stdout, stderr, 'To kopah messages:', args.verbose)
             print(' - time to copy to kopah = %d sec' % (time()-tt0))
