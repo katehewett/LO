@@ -33,9 +33,10 @@ import Lfun
 
 # Resolve your keys and set the dummy region 
 # for case with Kate . can we loop this into get lo info?? 
+s5cmd_env = {}
 current_user = os.environ.get('USER')
 
-if current_user=='kmhewett':
+if current_user=='kmhewett' or current_user=='katehewett':
     s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('MACC_KEY', '')      # Kate has two sets of access keys
     s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('MACC_SECRET', '')
 else: 
