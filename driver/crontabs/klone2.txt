@@ -20,9 +20,11 @@ PATH=/usr/local/bin:/usr/bin
 00 04 * * * source ~/.bashrc; cat $LOd/*cas7.log | mail -s 'Kates version klone cas7 forcing' kmhewett@uw.edu
 
 # main forecast
+
 20 03 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g cas7 -t t2 -x x11b -r forecast -s continuation -grp macc -np 192 -vip True -done c11 < /dev/null > $LOd/cas7_forecast.log
 00 08 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g cas7 -t t2 -x x11b -r forecast -s continuation -grp macc -np 192 -vip True -done c11 < /dev/null > $LOd/cas7_forecast_2.log
-00 14 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g cas7 -t t2 -x x11b -r forecast -s continuation -grp macc -np 192 -vip True -done c11 < /dev/null > $LOd/cas7_forecast_3.log
+30 09 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g cas7 -t t2 -x x11b -r forecast -s continuation -grp macc -np 192 -vip True -done c11 < /dev/null > $LOd/cas7_forecast_3.log
+00 14 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g cas7 -t t2 -x x11b -r forecast -s continuation -grp macc -np 192 -vip True -done c11 < /dev/null > $LOd/cas7_forecast_4.log
 # post processing
 # this is now handled by the driver
 # 30 05 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_post1.sh
@@ -31,6 +33,10 @@ PATH=/usr/local/bin:/usr/bin
 01 06 * * * source ~/.bashrc; mail -s 'Kates version cas7 forecast klone' kmhewett@uw.edu < $LOd/cas7_forecast.log
 50 06 * * * source ~/.bashrc; mail -s 'Kates version post_K1' pmacc@uw.edu < $LOd/post_K1.log
 50 06 * * * source ~/.bashrc; mail -s 'Kates version post_K1' kmhewett@uw.edu < $LOd/post_K1.log
+
+# extra for trouble shooting also remove the 930am cas7 forecast after fix
+00 13 * * * source ~/.bashrc; mail -s 'Kates version cas7 forecast klone' pmacc@uw.edu < $LOd/cas7_forecast3.log
+01 13 * * * source ~/.bashrc; mail -s 'Kates version cas7 forecast klone' kmhewett@uw.edu < $LOd/cas7_forecas3.log
 
 # nested forecasts
 
