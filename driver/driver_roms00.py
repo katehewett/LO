@@ -90,7 +90,6 @@ else:
     s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('AWS_ACCESS_KEY_ID', '')    # Parker
     s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
 
-s5cmd_env['AWS_REGION'] = 'us-west-2'
 s5cmd_env['S3_ENDPOINT_URL'] = 'https://s3.kopah.uw.edu'
 
 # >>> START Command Line Arguments <<<
