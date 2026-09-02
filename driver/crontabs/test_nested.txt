@@ -2,6 +2,6 @@ LANG=en-US.UTF-8
 LOd=/gscratch/macc/kmhewett/LO/driver
 
 # nested forecasts
-00 19 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g wgh2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done w11 < /dev/null > $LOd/wgh2_forecast.log
-00 22 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g oly2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done o11 < /dev/null > $LOd/oly2_forecast.log
+40 20 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g wgh2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done w11 < /dev/null > $LOd/wgh2_forecast.log
+40 22 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g oly2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done o11 < /dev/null > $LOd/oly2_forecast.log
 
