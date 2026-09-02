@@ -10,10 +10,15 @@ fi
 CURRENT_USER=$(whoami)
 
 # UW Kopah s5cmd relies on S3_endpoint_url so this should work
-export S3_ENDPOINT_URL="$S3_ENDPOINT_URL"
+# export S3_ENDPOINT_URL="$S3_ENDPOINT_URL"
 
-if [[ "$CURRENT_USER" == *"kmhewett"* ]]; then
-    load_macc
+if [ "$CURRENT_USER" = "kmhewett" ] || [ "$CURRENT_USER" = "katehewett" ]; then
+    # Kate has two sets of access keys, this pulls MACC from her bashrc 
+    export AWS_ACCESS_KEY_ID="${MACC_KEY:-}"
+    export AWS_SECRET_ACCESS_KEY="${MACC_SECRET:-}"
+    echo "--- Running with Kate's credentials (User: $CURRENT_USER) ---"
+else
+    echo "--- Running with credentials (User: $CURRENT_USER) ---"
 fi
 
 dstr=`date -u +%Y%m%d`00
