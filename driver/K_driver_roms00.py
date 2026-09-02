@@ -50,7 +50,6 @@ current_user = os.environ.get('USER')
 if current_user=='kmhewett' or current_user=='katehewett':
     load_macc()
 
-
 # >>> START Command Line Arguments <<<
 
 # Arguments without defaults are required.
