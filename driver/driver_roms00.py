@@ -87,11 +87,11 @@ if current_user=='kmhewett' or current_user=='katehewett':
     s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('MACC_KEY', '')      # Kate has two sets of access keys
     s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('MACC_SECRET', '')
 else: 
-    s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('AWS_ACCESS_KEY_ID', '')    # generic user setup in macc group
+    s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('AWS_ACCESS_KEY_ID', '')    # Parker
     s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
 
-s5cmd_env['AWS_REGION']            = 'us-west-2'
-s5cmd_env['S3_ENDPOINT_URL'] = os.environ.get('S3_ENDPOINT_URL', '')
+s5cmd_env['AWS_REGION'] = 'us-west-2'
+s5cmd_env['S3_ENDPOINT_URL'] = 'https://s3.kopah.uw.edu'
 
 # >>> START Command Line Arguments <<<
 
