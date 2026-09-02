@@ -31,43 +31,6 @@ if str(pth) not in sys.path:
     sys.path.append(str(pth))
 import Lfun
 
-# Resolve your keys; dummy region is in bash_profile
-# for case with Kate . can we loop this into get lo info?? Or put in Lfun??? 
-"""current_user = os.environ.get('USER')
-
-if current_user == 'kmhewett' or current_user == 'katehewett':
-    # Kate has two sets of access keys, this pulls MACC from her bashrc 
-    os.environ['AWS_ACCESS_KEY_ID'] = os.environ.get('MACC_KEY', '')
-    os.environ['AWS_SECRET_ACCESS_KEY'] = os.environ.get('MACC_SECRET', '')
-    print(f"--- Running with Kate's credentials (User: {current_user}) ---")
-else:
-    print(f"--- Running with credentials (User: {current_user}) ---")
-
-# SAFETY CHECK: Exit if the key environment variable is missing or empty
-if (not os.environ.get('AWS_ACCESS_KEY_ID') or not os.environ.get('AWS_SECRET_ACCESS_KEY')):
-    print("--- CRITICAL FAILURE: Kopah credentials are missing or empty! Exiting process. ---")
-    sys.exit(1)
-else:
-    print("--- Kopah credentials successfully verified ---")
-
-if (not os.environ.get('S3_ENDPOINT_URL')): 
-    os.environ('S3_ENDPOINT_URL') = 'https://s3.kopah.uw.edu'
-    print(f"--- Was missing s3 endpoint @ User: {current_user}) ---")"""
-
-# Resolve your keys and set the dummy region 
-# for case with Kate . can we loop this into get lo info?? 
-s5cmd_env = {}
-current_user = os.environ.get('USER')
-
-if current_user=='kmhewett' or current_user=='katehewett':
-    s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('MACC_KEY', '')             # Kate has two sets of access keys
-    s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('MACC_SECRET', '')
-else: 
-    s5cmd_env['AWS_ACCESS_KEY_ID']     = os.environ.get('AWS_ACCESS_KEY_ID', '')    # Parker
-    s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
-
-s5cmd_env['S3_ENDPOINT_URL'] = 'https://s3.kopah.uw.edu'
-
 # >>> START Command Line Arguments <<<
 
 # Arguments without defaults are required.
@@ -176,6 +139,16 @@ def messages(stdout, stderr, mtitle, verbose):
         print(' stderr '.center(Ncenter,'-'))
         print(stderr.decode())
     sys.stdout.flush()
+
+# Get Kopah access keys, exit if none
+# calls Lfun function get_s5cmd_env
+current_user = os.environ.get('USER')
+s5cmd_env = get_macc_s5cmd_env(current_user)
+if s5cmd_env is None:
+    print(f"Error: No valid access key format found for user '{current_user}'. Please update your bashrc.")
+else:
+    print("Environment successfully loaded! for '{current_user}'")
+    # Proceed with using s5cmd_env...
 
 # set time range to process
 if args.run_type == 'forecast':
@@ -514,26 +487,29 @@ while dt <= dt1:
         # Anyone in the group can access files using a URL like:
         # https://s3.kopah.uw.edu/liveocean-forecast/f[date string]/ocean_his_00[01-25].nc and etc.
         if args.to_kopah:
-            tt0 = time()
-            bucket_name = 'liveocean-' + Ldir['local_user']
-            # make the bucket if needed
-            #cmd_list = ['s5cmd','mb','s3://'+bucket_name]
-            s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'              # find the binary path
-            s5cmd_bin = [s5cmd_base, '--endpoint-url', 'https://s3.kopah.uw.edu'] # bundle the endpoint to always target Kopah automatically
-            cmd_list = s5cmd_bin + ['mb','s3://'+bucket_name]                         # make bucket
-            proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
-            stdout, stderr = proc.communicate()
-            messages(stdout, stderr, 'Create Kopah bucket:', args.verbose)
-            # sync to the bucket, using the standard LO directory structure
-            #cmd_list = ['s5cmd','sync',str(roms_out_dir)+'/*',
-            #    's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
-            cmd_list = s5cmd_bin + ['sync',str(roms_out_dir)+'/*',
-                's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']      # sync to bucket
-            proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
-            stdout, stderr = proc.communicate()
-            messages(stdout, stderr, 'To kopah messages:', args.verbose)
-            print(' - time to copy to kopah = %d sec' % (time()-tt0))
-            sys.stdout.flush()
+            if s5cmd_env is None:
+                print('missing credentials, not creating public link')
+            else:
+                tt0 = time()
+                bucket_name = 'liveocean-' + Ldir['local_user']
+                # make the bucket if needed
+                #cmd_list = ['s5cmd','mb','s3://'+bucket_name]
+                s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'              # find the binary path
+                s5cmd_bin = [s5cmd_base, '--endpoint-url', 'https://s3.kopah.uw.edu']     # bundle the endpoint to always target Kopah automatically
+                cmd_list = s5cmd_bin + ['mb','s3://'+bucket_name]                         # make bucket
+                proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
+                stdout, stderr = proc.communicate()
+                messages(stdout, stderr, 'Create Kopah bucket:', args.verbose)
+                # sync to the bucket, using the standard LO directory structure
+                #cmd_list = ['s5cmd','sync',str(roms_out_dir)+'/*',
+                #    's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
+                cmd_list = s5cmd_bin + ['sync',str(roms_out_dir)+'/*',
+                    's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']      # sync to bucket
+                proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
+                stdout, stderr = proc.communicate()
+                messages(stdout, stderr, 'To kopah messages:', args.verbose)
+                print(' - time to copy to kopah = %d sec' % (time()-tt0))
+                sys.stdout.flush()
 
         if (dt == dt1) and (args.run_type == 'forecast'):
             # Start post processing

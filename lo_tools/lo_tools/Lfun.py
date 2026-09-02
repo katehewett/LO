@@ -345,6 +345,45 @@ def module_from_file(module_name, file_path):
     spec.loader.exec_module(module)
     return module
 
+def get_macc_s5cmd_env(current_user):
+    """
+    Generates the s5cmd environment dictionary based on the current user.
+    Created for using macc group Kopah stroage. 
+
+    This function was created because Kate has 2 sets of access credentials: 
+    1 set for ECMWF ('HEWETT') and another set for ~everything else ('MACC'). 
+    
+    Other group memebers should write their keys in the format of
+        export AWS_ACCESS_KEY_ID='<Kopah ACCESS KEY>'     # replace with Kopah access key
+        export AWS_SECRET_ACCESS_KEY='<Kopah SECRET KEY>' # replace with Kopah secret key
+        export S3_ENDPOINT_URL='https://s3.kopah.uw.edu'
+    in their bashrc and bash_profile. 
+
+    If there is a special case another user has more than one set of keys, then we can
+    update this function for them to interact with LO driver scripts. 
+    """
+    s5cmd_env = {}
+    
+    if current_user == 'kmhewett' or current_user == 'katehewett':
+        # Kate has two sets of access keys
+        s5cmd_env['AWS_ACCESS_KEY_ID'] = os.environ.get('MACC_KEY', '') 
+        s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('MACC_SECRET', '')
+        s5cmd_env['S3_ENDPOINT_URL'] = 'https://s3.kopah.uw.edu'
+        return s5cmd_env
+    
+    elif os.environ.get('AWS_ACCESS_KEY_ID') and os.environ.get('AWS_SECRET_ACCESS_KEY'):
+        # catch-all case: 
+        # Any user, including Parker, who has one set of default keys defined in their environment
+        s5cmd_env['AWS_ACCESS_KEY_ID'] = os.environ.get('AWS_ACCESS_KEY_ID', '') 
+        s5cmd_env['AWS_SECRET_ACCESS_KEY'] = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
+        s5cmd_env['S3_ENDPOINT_URL'] = 'https://s3.kopah.uw.edu'
+        return s5cmd_env
+    
+    else:
+        # flag this case: No matching credentials found -- so don't return anything will 
+        # print error in main script and exit
+        return None    
+
 def file_to_kopah(fn, bucket_name, public=True):
     """
     This copies a file to an s3 bucket on kopah. You need kopah credentials
