@@ -34,7 +34,7 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 # nested forecasts
 
 30 07 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g wgh2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done w11 < /dev/null > $LOd/wgh2_forecast.log
-40 17 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g wgh2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done w11 < /dev/null > $LOd/wgh2_forecast_2.log
+00 17 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g wgh2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done w11 < /dev/null > $LOd/wgh2_forecast_2.log
 # post processing
 # 00 08 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_post2.sh
 # emails

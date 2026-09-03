@@ -143,11 +143,11 @@ def messages(stdout, stderr, mtitle, verbose):
 # Get Kopah access keys, exit if none
 # calls Lfun function get_s5cmd_env
 current_user = os.environ.get('USER')
-s5cmd_env = get_macc_s5cmd_env(current_user)
+s5cmd_env = Lfun.get_macc_s5cmd_env(current_user)
 if s5cmd_env is None:
     print(f"Error: No valid access key format found for user '{current_user}'. Please update your bashrc.")
 else:
-    print("Environment successfully loaded! for '{current_user}'")
+    print(f"Environment successfully loaded! for '{current_user}'")
     # Proceed with using s5cmd_env...
 
 # set time range to process
