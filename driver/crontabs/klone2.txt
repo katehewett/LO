@@ -53,6 +53,10 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 30 11 * * * source ~/.bashrc; mail -s 'Kates version post_K3' pmacc@uw.edu < $LOd/post_K3.log
 30 11 * * * source ~/.bashrc; mail -s 'Kates version post_K3' kmhewett@uw.edu < $LOd/post_K3.log
 
+# special runs 
+30 15 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g wgh2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done w11 < /dev/null > $LOd/wgh2_forecast_special.log
+15 18 * * * source ~/.bashrc; mail -s 'Kates version wgh special forecast klone' kmhewett@uw.edu < $LOd/wgh2_forecast_special.log
+
 # backup runs of forcing generation
 
 # get WRF files if needed
