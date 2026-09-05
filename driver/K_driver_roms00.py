@@ -287,7 +287,7 @@ while dt <= dt1:
                 cmd_list = [s5cmd_bin,'sync',
                     's3://'+bucket_name+'/LO_output/forcing/'+Ldir['gridname']+'/'+f_string+'/'+force_choice+'/*',
                     str(force_dir)+'/'+force_choice+'/']
-                proc = Po(cmd_list, stdout=Pi, stderr=Pi)
+                proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
                 stdout, stderr = proc.communicate()
                 messages(stdout, stderr, 'Copy forcing ' + force_choice, args.verbose)
         print(' - time to get forcing = %d sec' % (time()-tt0))
@@ -488,7 +488,7 @@ while dt <= dt1:
         # https://s3.kopah.uw.edu/liveocean-forecast/f[date string]/ocean_his_00[01-25].nc and etc.
         if args.to_kopah:
             if s5cmd_env is None:
-                print('missing credentials, not creating public link')
+                print('missing credentials, can not send to kopah')
             else:
                 tt0 = time()
                 bucket_name = 'liveocean-' + Ldir['local_user']
