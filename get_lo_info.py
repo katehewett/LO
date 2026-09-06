@@ -70,6 +70,8 @@ elif (str(HOME) == '/home/parker') & ('apogee' in HOSTNAME):
     roms_out2 = Path('/dat2/parker/LO_roms')
     roms_out3 = Path('/dat2/jxiong/LO_roms')
     roms_out4 = Path('/pgdat2/parker/LO_roms')
+    remote_user = 'parker'
+    local_user = 'parker'
 
 elif (str(HOME) == '/mmfs1/home/pmacc'):
     lo_env = 'pm_klone'
@@ -102,12 +104,15 @@ elif (str(HOME) == '/home/kmhewett') & ('apogee' in HOSTNAME):
     roms_out3 = Path('/dat1/auroral/LO_roms')
     roms_out4 = Path('/pgdat2/parker/LO_roms')
     roms_out5 = Path('/dat1/kmhewett/LO_roms')
+    remote_user = 'kmhewett'
+    local_user = 'kmhewett'
 
 elif (str(HOME) == '/mmfs1/home/kmhewett'):
     lo_env = 'kh_klone'
     remote_user = 'kmhewett'
     remote_machine = 'apogee.ocean.washington.edu'
     remote_dir0 = '/dat1/kmhewett
+    local_user = 'kmhewett'
 
 Ldir0 = dict()
 Ldir0['lo_env'] = lo_env
