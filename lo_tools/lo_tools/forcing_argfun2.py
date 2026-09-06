@@ -102,12 +102,12 @@ def finale(Ldir, result_dict):
             print(f"s5cmd env successfully loaded for '{local_user}'")
 
             bucket_name = 'liveocean-' + local_user
-            s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'              # find the binary path
-            s5cmd_bin = [s5cmd_base, '--endpoint-url', 'https://s3.kopah.uw.edu']     # bundle the endpoint to always target Kopah automatically
+            s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'                 # find the binary path
+            s5cmd_bin = [s5cmd_base, '--endpoint-url', s5cmd_env['S3_ENDPOINT_URL']]     # bundle the endpoint to target Kopah automatically, as entered in our bashrc as https://s3.kopah.uw.edu'
             
             cmd_list = s5cmd_bin + ['sync',str(out_dir)+'/*',
                                     's3://'+bucket_name+'/LO_output/forcing/'+Ldir['gridname']+'/f'+Ldir['date_string']+'/'+Ldir['frc']+'/']
-            proc = Po(cmd_list, stdout=Pi, stderr=Pi)
+            proc = Po(cmd_list, stdout=Pi, stderr=Pi, env = s5cmd_env)
             stdout, stderr = proc.communicate()
             if len(stderr) > 0:
                 print('Copy to Kopah stderr')
