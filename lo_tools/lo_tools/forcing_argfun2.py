@@ -89,7 +89,8 @@ def finale(Ldir, result_dict):
     if Ldir['to_kopah']:
         tt0 = time()
 
-        local_user = Ldir['local_user']
+        # parker is local_user = pmacc and remote_user = parker; kate is the same either way
+        local_user = Ldir['local_user'] 
 
         # Get Kopah access keys, exit if none
         # calls Lfun function get_s5cmd_env

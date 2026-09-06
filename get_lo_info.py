@@ -53,6 +53,7 @@ except KeyError:
 # print('HOME = ' + str(HOME))
 # print('HOSTNAME = ' + HOSTNAME)
 
+# parker
 if str(HOME) == '/Users/parkermaccready':
     lo_env = 'pm_mac'
 
@@ -76,6 +77,37 @@ elif (str(HOME) == '/mmfs1/home/pmacc'):
     remote_machine = 'apogee.ocean.washington.edu'
     remote_dir0 = '/dat1/parker'
     local_user = 'pmacc'
+
+# kate
+elif (str(HOME) == '/Users/katehewett'):
+    lo_env = 'kh_mac'
+    which_matlab = '/Applications/MATLAB_R2023b.app/bin/matlab'
+    roms_out1 = Path('/Users/katehewett/Documents/LO_roms') # beeecareful!
+    roms_out2 = Path('/Users/katehewett/Documents/apogee_parker/LO_roms') # special case
+    roms_out3 = Path('/Users/katehewett/Documents/apogee_auroral/LO_roms') # special case
+
+elif (str(HOME) == '/home/kmhewett') & ('perigee' in HOSTNAME):
+    lo_env = 'kh_perigee'
+    roms_out1 = Path('/agdat1/parker/LO_roms')
+    roms_out2 = Path('/agdat2/parker/LO_roms')
+    roms_out3 = Path('/data1/parker/LO_roms')
+    roms_out4 = Path('/data2/parker/LiveOcean_roms/output') # old liveocean
+    #roms_out5 = Path('/data1/kmhewett/LO_roms')             
+
+elif (str(HOME) == '/home/kmhewett') & ('apogee' in HOSTNAME):
+    lo_env = 'kh_apogee'
+    roms_out1 = Path('/dat1/parker/LO_roms')
+    roms_out2 = Path('/dat2/parker/LO_roms')
+    #roms_out3 = Path('/pgdat1/parker/LO_roms')
+    roms_out3 = Path('/dat1/auroral/LO_roms')
+    roms_out4 = Path('/pgdat2/parker/LO_roms')
+    roms_out5 = Path('/dat1/kmhewett/LO_roms')
+
+elif (str(HOME) == '/mmfs1/home/kmhewett'):
+    lo_env = 'kh_klone'
+    remote_user = 'kmhewett'
+    remote_machine = 'apogee.ocean.washington.edu'
+    remote_dir0 = '/dat1/kmhewett
 
 Ldir0 = dict()
 Ldir0['lo_env'] = lo_env
