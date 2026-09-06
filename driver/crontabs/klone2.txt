@@ -1,5 +1,5 @@
 LANG=en-US.UTF-8
-LOd=/gscratch/macc/parker/LO/driver
+LOd=/gscratch/macc/kmhewett/LO/driver
 
 # testing
 # * * * * * source ~/.bashrc; echo ${conda_source} > $LOd/cs_test.txt
