@@ -1,0 +1,9 @@
+LANG=en-US.UTF-8
+LOd=/gscratch/macc/kmhewett/LO/driver
+
+# main forecast
+32 18 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g cas7 -t t2 -x x11b -r forecast -s continuation -grp macc -np 192 -vip True -done c11 < /dev/null > $LOd/cas7_forecast.log
+# emails
+30 20 * * * source ~/.bashrc; mail -s 'Kates v2 cas7 forecast klone' kmhewett@uw.edu < $LOd/cas7_forecast.log
+30 21 * * * source ~/.bashrc; mail -s 'Kates v2 post_K1' kmhewett@uw.edu < $LOd/post_K1.log
+
