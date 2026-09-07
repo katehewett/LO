@@ -92,7 +92,7 @@ def finale(Ldir, result_dict):
         # parker is local_user = pmacc and remote_user = parker; kate is the same either way
         local_user = Ldir['local_user'] 
 
-        # Get Kopah access keys, exit if none
+        # Get Kopah access keys
         # calls Lfun function get_s5cmd_env
         s5cmd_env = Lfun.get_macc_s5cmd_env(local_user)
         if s5cmd_env is None:
@@ -108,7 +108,7 @@ def finale(Ldir, result_dict):
             
             cmd_list = s5cmd_bin + ['sync',str(out_dir)+'/*',
                                     's3://'+bucket_name+'/LO_output/forcing/'+Ldir['gridname']+'/f'+Ldir['date_string']+'/'+Ldir['frc']+'/']
-            proc = Po(cmd_list, stdout=Pi, stderr=Pi, env = s5cmd_env)
+            proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
             stdout, stderr = proc.communicate()
             if len(stderr) > 0:
                 print('Copy to Kopah stderr')

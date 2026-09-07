@@ -37,6 +37,7 @@ result_dict['start_dt'] = datetime.now()
 
 # ****************** CASE-SPECIFIC CODE *****************
 
+# can remove import os after test apogee (see line 68)
 import os
 import time
 import shutil
@@ -64,7 +65,9 @@ do_d3 = True
 do_d4 = True
 wrf_dir = Ldir['data'] / 'wrf' # the default
 if 'apogee' in Ldir['lo_env']:
-    wrf_dir = Path('/dat1/parker/LO_data/wrf')
+    current_user = os.environ.get('USER')              # this needs to be updated to use Ldir['local_user'] but need to check on apogee if it works!
+    # wrf_dir = Path('/dat1/parker/LO_data/wrf')
+    wrf_dir = Path('/dat1/{current_user}/LO_data/wrf') # for now use current user, which should work for me and parker on apogee 
 
 # Copy in the wrf data temporarily (only for backfill)
 get_from_kopah = False
@@ -89,15 +92,29 @@ in_dir = wrf_dir / d_str00
 if get_from_kopah:
     Lfun.make_dir(in_dir)
     in_dir_to_clean = in_dir
-    bucket_name = 'liveocean-pmacc' # everyone in the group can use this
-    cmd_list = ['s5cmd','sync',
-        's3://'+bucket_name+'/LO_data/wrf/'+d_str00+'/*',
-        str(in_dir)+'/']
-    proc = Po(cmd_list, stdout=Pi, stderr=Pi)
-    stdout, stderr = proc.communicate()
-    if len(stderr) > 0:
-        print(stderr.decode())
-        sys.exit()
+
+    # parker is local_user = pmacc and remote_user = parker; kate is the same either way
+    local_user = Ldir['local_user'] 
+
+    # Get Kopah access keys
+    s5cmd_env = Lfun.get_macc_s5cmd_env(local_user)
+    if s5cmd_env is None:
+        print(f"Error: missing valid access key format for user '{local_user}'. Check your bashrc (bash_profile).")
+    elif local_user == 'BLANK':
+        print(f"Error: Missing a valid local user, did not send to kopah")
+    else:
+        print(f"s5cmd env successfully loaded for '{local_user}'")
+
+        bucket_name = 'liveocean-' + local_user
+        s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'                 # find the binary path
+        s5cmd_bin = [s5cmd_base, '--endpoint-url', s5cmd_env['S3_ENDPOINT_URL']]     # bundle the endpoint to target Kopah automatically, as entered in our bashrc as https://s3.kopah.uw.edu'
+        cmd_list = s5cmd_bin + ['sync', 
+                                's3://'+bucket_name+'/LO_data/wrf/'+d_str00+'/*',str(in_dir)+'/']
+        proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
+        stdout, stderr = proc.communicate()
+        if len(stderr) > 0:
+            print(stderr.decode())
+            sys.exit()
 
 d2_list = []
 d3_list = []
