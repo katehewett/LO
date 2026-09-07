@@ -123,7 +123,8 @@ Ldir = Lfun.Lstart(gridname=args.gridname, tag=args.tag, ex_name=args.ex_name)
 
 # Assign some variables related to the remote machine.  These are user-specific
 # and are specified in get_lo_info.py.
-local_user = Ldir['local_user'] # used to create kopah bucket name
+local_user = Ldir['local_user'] # used to create kopah bucket name (parker = pmacc; kate = kmhewett) 
+# remote_user = Ldir['remote_user'] # parker 
 
 Ncenter = 30
 def messages(stdout, stderr, mtitle, verbose):
@@ -139,6 +140,15 @@ def messages(stdout, stderr, mtitle, verbose):
         print(' stderr '.center(Ncenter,'-'))
         print(stderr.decode())
     sys.stdout.flush()
+
+# Get Kopah access keys, calls Lfun function get_s5cmd_env
+s5cmd_env = Lfun.get_macc_s5cmd_env(local_user)
+if s5cmd_env is None:
+    print(f"Error: missing valid access key format for user '{local_user}'. Check your bashrc (bash_profile).")
+elif local_user == 'BLANK':
+    print(f"Error: Missing a valid local user, check for issues connecting with kopah")
+else:
+    print(f"s5cmd env successfully loaded for '{local_user}'")
 
 # set time range to process
 if args.run_type == 'forecast':
@@ -260,6 +270,8 @@ while dt <= dt1:
     
     # Get the forcing from kopah, backfill only. For the forecast we assume it was
     # just created on klone (could change this later so we always get it from kopah).
+    # this needs to be updated, because it points to local_user for bucket, but Kate doesn't 
+    # have all the forcing for LO hindcast in hers. add in a choice later on ?
     if args.run_type == 'backfill':
         tt0 = time()
         Lfun.make_dir(force_dir, clean=True)
@@ -269,15 +281,16 @@ while dt <= dt1:
                 pass
             else:
                 force_choice = force_dict[force]
-                bucket_name = 'liveocean-' + Ldir['local_user']
+                bucket_name = 'liveocean-' + Ldir['local_user']  
                 #cmd_list = ['s5cmd','sync',
                 #    's3://'+bucket_name+'/LO_output/forcing/'+Ldir['gridname']+'/'+f_string+'/'+force_choice+'/*',
                 #    str(force_dir)+'/'+force_choice+'/']
-                s5cmd_bin = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'
-                cmd_list = [s5cmd_bin,'sync',
+                s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'                 # find the binary path
+                s5cmd_bin = [s5cmd_base, '--endpoint-url', s5cmd_env['S3_ENDPOINT_URL']]     # bundle the endpoint to target Kopah automatically, as entered in our bashrc as https://s3.kopah.uw.edu'
+                cmd_list = s5cmd_bin + ['sync',
                     's3://'+bucket_name+'/LO_output/forcing/'+Ldir['gridname']+'/'+f_string+'/'+force_choice+'/*',
                     str(force_dir)+'/'+force_choice+'/']
-                proc = Po(cmd_list, stdout=Pi, stderr=Pi)
+                proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
                 stdout, stderr = proc.communicate()
                 messages(stdout, stderr, 'Copy forcing ' + force_choice, args.verbose)
         print(' - time to get forcing = %d sec' % (time()-tt0))
@@ -478,24 +491,32 @@ while dt <= dt1:
         # https://s3.kopah.uw.edu/liveocean-forecast/f[date string]/ocean_his_00[01-25].nc and etc.
         if args.to_kopah:
             tt0 = time()
-            bucket_name = 'liveocean-' + Ldir['local_user']
-            # make the bucket if needed
-            #cmd_list = ['s5cmd','mb','s3://'+bucket_name]
-            s5cmd_bin = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'
-            cmd_list = [s5cmd_bin,'mb','s3://'+bucket_name]
-            proc = Po(cmd_list, stdout=Pi, stderr=Pi)
-            stdout, stderr = proc.communicate()
-            messages(stdout, stderr, 'Create Kopah bucket:', args.verbose)
-            # sync to the bucket, using the standard LO directory structure
-            #cmd_list = ['s5cmd','sync',str(roms_out_dir)+'/*',
-            #    's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
-            cmd_list = [s5cmd_bin,'sync',str(roms_out_dir)+'/*',
-                's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
-            proc = Po(cmd_list, stdout=Pi, stderr=Pi)
-            stdout, stderr = proc.communicate()
-            messages(stdout, stderr, 'To kopah messages:', args.verbose)
-            print(' - time to copy to kopah = %d sec' % (time()-tt0))
-            sys.stdout.flush()
+            
+            if s5cmd_env is None:
+                print(f"Error: missing valid access key format for user '{local_user}'. Did not transfer to kopah")
+            elif local_user == 'BLANK':
+                print(f"Error: Missing a valid local user, did not send to kopah")
+            else:
+                bucket_name = 'liveocean-' + Ldir['local_user']
+                # make the bucket if needed
+                #cmd_list = ['s5cmd','mb','s3://'+bucket_name]
+                s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'                 # find the binary path
+                s5cmd_bin = [s5cmd_base, '--endpoint-url', s5cmd_env['S3_ENDPOINT_URL']]     # bundle the endpoint to target Kopah automatically, as entered in our bashrc as https://s3.kopah.uw.edu'
+                
+                cmd_list = s5cmd_bin + ['mb','s3://'+bucket_name]
+                proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
+                stdout, stderr = proc.communicate()
+                messages(stdout, stderr, 'Create Kopah bucket:', args.verbose)
+                # sync to the bucket, using the standard LO directory structure
+                #cmd_list = ['s5cmd','sync',str(roms_out_dir)+'/*',
+                #    's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
+                cmd_list = s5cmd_bin + ['sync',str(roms_out_dir)+'/*',
+                    's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
+                proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
+                stdout, stderr = proc.communicate()
+                messages(stdout, stderr, 'To kopah messages:', args.verbose)
+                print(' - time to copy to kopah = %d sec' % (time()-tt0))
+                sys.stdout.flush()
 
         if (dt == dt1) and (args.run_type == 'forecast'):
             # Start post processing
