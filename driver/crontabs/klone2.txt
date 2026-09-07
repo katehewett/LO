@@ -55,14 +55,14 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 # backup runs of forcing generation
 
 # get WRF files if needed
-05 21 * * * source ~/.bashrc; python3 $LOd/get_wrf.py < /dev/null > $LOd/wrf.log
-15 21 * * * source ~/.bashrc; python3 $LOd/get_wrf.py < /dev/null > $LOd/wrf.log
-25 21 * * * source ~/.bashrc; python3 $LOd/get_wrf.py < /dev/null > $LOd/wrf.log
+00 22 * * * source ~/.bashrc; python3 $LOd/get_wrf.py < /dev/null > $LOd/wrf.log
+10 22 * * * source ~/.bashrc; python3 $LOd/get_wrf.py < /dev/null > $LOd/wrf.log
+20 22 * * * source ~/.bashrc; python3 $LOd/get_wrf.py < /dev/null > $LOd/wrf.log
 # and archive if needed
-35 21 * * * source ~/.bashrc; $LOd/wrf_to_kopah.sh
+30 22 * * * source ~/.bashrc; $LOd/wrf_to_kopah.sh
 
 # create forecast forcing (really should have a way to see if this is already done)
-45 21 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_forecast_forcing.sh
+45 22 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_forecast_forcing.sh
 
 # refresh this crontab
 05 12 * * * crontab <<< $(crontab -l)
