@@ -30,6 +30,10 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 51 06 * * * source ~/.bashrc; mail -s 'Kates v2 post_K1' pmacc@uw.edu < $LOd/post_K1.log
 52 06 * * * source ~/.bashrc; mail -s 'Kates v2 post_K1' kmhewett@uw.edu < $LOd/post_K1.log
 
+# special emails - 
+30 20 * * * source ~/.bashrc; mail -s 'SPECIAL: Kates v2 cas7 forecast klone' kmhewett@uw.edu < $LOd/cas7_forecast.log
+30 21 * * * source ~/.bashrc; mail -s 'SPECIAL: Kates v2 post_K1' kmhewett@uw.edu < $LOd/post_K1.log
+
 # nested forecasts
 
 35 07 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g wgh2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done w11 < /dev/null > $LOd/wgh2_forecast.log
