@@ -7,6 +7,7 @@ import argparse
 import sys
 from lo_tools import Lfun
 
+import shutil
 from subprocess import Popen as Po
 from subprocess import PIPE as Pi
 from time import time
