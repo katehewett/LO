@@ -33,7 +33,12 @@ def intro():
     # Specialized flags to send output to kopah.
     parser.add_argument('-k','--to_kopah', default=False, type=Lfun.boolean_string)
     parser.add_argument('-ktest','--test_to_kopah', default=False, type=Lfun.boolean_string)
-    
+    # This kopah flag sets the destination bucket in the macc group's kopah storage 
+    # that will recieve history files. Example: if Kate is running the forecast, -ktest True 
+    # will sends history files to Kate's bucket, -ktest False will send to to Parker's bucket
+    # If Parker is running the forecast, either works and will send history files to his kopah bucket.
+    parser.add_argument('-kuser','--kopah_user', default=False, type=Lfun.boolean_string) 
+
     # get the args
     args = parser.parse_args()
     
@@ -48,7 +53,7 @@ def intro():
     Ldir = Lfun.Lstart(gridname=args.gridname)
     # add more entries to Ldir for use by make_forcing_main.py
     for a in ['frc', 'run_type', 'start_type', 'date_string', 'testing','test_planB',
-    'gtagex','roms_out_num','do_bio','trapsP','to_kopah','test_to_kopah']:
+    'gtagex','roms_out_num','do_bio','trapsP','to_kopah','test_to_kopah','kopah_user']:
         Ldir[a] = argsd[a]
     # set where to look for model output
     if Ldir['roms_out_num'] == 0:
@@ -93,6 +98,14 @@ def finale(Ldir, result_dict):
         # parker is local_user = pmacc and remote_user = parker; kate is the same either way
         local_user = Ldir['local_user'] 
 
+        # set bucket name if args.kopah_user is false sends to Parker's kopah buckets 
+        if Ldir['kopah_user']:
+            bucket_name = 'liveocean-' + Ldir['local_user']
+            print(f"Sending forcing files to '{local_user}'s kopah bucket")
+        else: 
+            bucket_name = 'liveocean-pmacctest' # UPDATE WHEN FINALIZE SWITCH
+            print(f"Sending forcing files to liveocean-pmactest kopah bucket")
+
         # Get Kopah access keys
         # calls Lfun function get_s5cmd_env
         s5cmd_env = Lfun.get_macc_s5cmd_env(local_user)
@@ -103,7 +116,7 @@ def finale(Ldir, result_dict):
         else:
             print(f"s5cmd env successfully loaded for '{local_user}'")
 
-            bucket_name = 'liveocean-' + local_user
+            #bucket_name = 'liveocean-' + local_user
             s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'                 # find the binary path
             s5cmd_bin = [s5cmd_base, '--endpoint-url', s5cmd_env['S3_ENDPOINT_URL']]     # bundle the endpoint to target Kopah automatically, as entered in our bashrc as https://s3.kopah.uw.edu'
             

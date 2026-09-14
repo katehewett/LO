@@ -92,6 +92,11 @@ parser.add_argument('-vip','--exclusive', default=False, type=Lfun.boolean_strin
 # Flags to send output to kopah.
 parser.add_argument('-k','--to_kopah', default=True, type=Lfun.boolean_string)
 parser.add_argument('-ktest','--test_to_kopah', default=False, type=Lfun.boolean_string)
+# This kopah flag sets the destination bucket in the macc group's kopah storage 
+# that will recieve history files. Example: if Kate is running the forecast, -ktest True 
+# will sends history files to Kate's bucket, -ktest False will send to to Parker's bucket
+# If Parker is running the forecast, either works and will send history files to his kopah bucket.
+parser.add_argument('-kuser','--kopah_user', default=False, type=Lfun.boolean_string) 
 
 # >>> END Command Line Arguments <<<
 
@@ -491,25 +496,28 @@ while dt <= dt1:
         # https://s3.kopah.uw.edu/liveocean-forecast/f[date string]/ocean_his_00[01-25].nc and etc.
         if args.to_kopah:
             tt0 = time()
-            
+
+            # set bucket name if args.kopah_user is false sends to Parker's kopah buckets 
+            if args.kopah_user:
+                bucket_name = 'liveocean-' + Ldir['local_user']
+                print(f"Sending history files to '{local_user}'s kopah bucket")
+            else: 
+                bucket_name = 'liveocean-pmacctest' # UPDATE WHEN FINALIZE SWITCH
+                print(f"Sending history files to liveocean-pmacctest kopah bucket")
+
             if s5cmd_env is None:
                 print(f"Error: missing valid access key format for user '{local_user}'. Did not transfer to kopah")
             elif local_user == 'BLANK':
                 print(f"Error: Missing a valid local user, did not send to kopah")
-            else:
-                bucket_name = 'liveocean-' + Ldir['local_user']
-                # make the bucket if needed
-                #cmd_list = ['s5cmd','mb','s3://'+bucket_name]
+            else: 
                 s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'                 # find the binary path
                 s5cmd_bin = [s5cmd_base, '--endpoint-url', s5cmd_env['S3_ENDPOINT_URL']]     # bundle the endpoint to target Kopah automatically, as entered in our bashrc as https://s3.kopah.uw.edu'
-                
+                # make the bucket if needed
                 cmd_list = s5cmd_bin + ['mb','s3://'+bucket_name]
                 proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
                 stdout, stderr = proc.communicate()
                 messages(stdout, stderr, 'Create Kopah bucket:', args.verbose)
                 # sync to the bucket, using the standard LO directory structure
-                #cmd_list = ['s5cmd','sync',str(roms_out_dir)+'/*',
-                #    's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
                 cmd_list = s5cmd_bin + ['sync',str(roms_out_dir)+'/*',
                     's3://'+bucket_name+'/LO_roms/'+Ldir['gtagex']+'/'+f_string+'/']
                 proc = Po(cmd_list, stdout=Pi, stderr=Pi, env=s5cmd_env)
