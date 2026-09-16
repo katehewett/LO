@@ -34,10 +34,9 @@ def intro():
     parser.add_argument('-k','--to_kopah', default=False, type=Lfun.boolean_string)
     parser.add_argument('-ktest','--test_to_kopah', default=False, type=Lfun.boolean_string)
     # This kopah flag sets the destination bucket in the macc group's kopah storage 
-    # that will recieve history files. Example: if Kate is running the forecast, -ktest True 
-    # will sends history files to Kate's bucket, -ktest False will send to to Parker's bucket
-    # If Parker is running the forecast, either works and will send history files to his kopah bucket.
-    parser.add_argument('-kuser','--kopah_user', default=False, type=Lfun.boolean_string) 
+    # that will recieve history files. If you have access to macc group kopah storage, then 
+    # Enter your username that is used on klone. Please do not use -kuser pmacc unless you are Kate or Parker. 
+    parser.add_argument('-kuser','--kopah_user', type=str, default = None) 
 
     # get the args
     args = parser.parse_args()
@@ -48,7 +47,14 @@ def intro():
         if argsd[a] == None:
             print('*** Missing required argument to forcing_argfun.intro(): ' + a)
             sys.exit()
-        
+    if (argsd['kopah_user'] is None) and (argsd['to_kopah'] == True):
+        print('Error: -kuser, kopah_user, is blank. Enter your kopah user name for macc storage. \n' \
+        'If you do not have macc storage credentials check with Kate or Parker.')
+        sys.exit()
+    if (argsd['kopah_user'] == 'pmacc') and (os.environ.get('USER') not in ('parker', 'pmacc', 'kmhewett', 'katehewett')):
+        print('Error: Check with Kate or Parker on kopah storage credentials. Do not send to pmacc without checking first.')
+        sys.exit()
+
     # get the dict Ldir
     Ldir = Lfun.Lstart(gridname=args.gridname)
     # add more entries to Ldir for use by make_forcing_main.py
@@ -95,28 +101,40 @@ def finale(Ldir, result_dict):
     if Ldir['to_kopah']:
         tt0 = time()
 
-        # parker is local_user = pmacc and remote_user = parker; kate is the same either way
-        local_user = Ldir['local_user'] 
+        # parker is current_user = pmacc and remote_user = parker (on klone); kate is the same either way
+        current_user = os.environ.get('USER') #Ldir['local_user'] 
 
-        # set bucket name if args.kopah_user is false sends to Parker's kopah buckets 
-        if Ldir['kopah_user']:
-            bucket_name = 'liveocean-' + Ldir['local_user']
-            print(f"Sending forcing files to '{local_user}'s kopah bucket")
-        else: 
-            bucket_name = 'liveocean-pmacctest' # UPDATE WHEN FINALIZE SWITCH
-            print(f"Sending forcing files to liveocean-pmactest kopah bucket")
+        # if no kopah_user exit
+        if (Ldir['kopah_user'] is None): 
+            print(f"Error: -kuser, kopah_user, is blank. Enter your kopah user name for macc storage. \n \
+            If you do not have macc storage credentials check with Kate or Parker.")
+            sys.exit()
 
-        # Get Kopah access keys
-        # calls Lfun function get_s5cmd_env
-        s5cmd_env = Lfun.get_macc_s5cmd_env(local_user)
-        if s5cmd_env is None:
-            print(f"Error: missing valid access key format for user '{local_user}'. Check your bashrc (bash_profile).")
-        elif local_user == 'BLANK':
-            print(f"Error: Missing a valid local user, did not send to kopah")
+        # if not kate or parker, and kuser does not equal current_user exit 
+        if (current_user not in ('parker', 'pmacc', 'kmhewett', 'katehewett')) and (current_user is not Ldir['kopah_user']):
+            print(f"Error: kopah_user and current user do not match. Make sure you are not sending to another users kopah storage.") 
+            sys.exit()
+
+        # set bucket name if pass tests 
+        if (Ldir['kopah_user'] == 'pmacc'):
+            if (current_user in ('parker', 'pmacc', 'kmhewett', 'katehewett')):
+                bucket_name = 'liveocean-pmacctest'
+                print(f"Sending forcing files to kopah bucket: liveocean-pmacc")
+            else: 
+                print(f"Error: can not send to liveocean-pmacc. Check kopah credentials.")
+                sys.exit()
         else:
-            print(f"s5cmd env successfully loaded for '{local_user}'")
+            bucket_name = 'liveocean-' + Ldir['kopah_user']
+            print(f"Sending forcing files to kopah bucket: {bucket_name}")
 
-            #bucket_name = 'liveocean-' + local_user
+        # Get Kopah access keys. Calls Lfun function get_s5cmd_env
+        # And send forcing files to macc group kopah storage 
+        s5cmd_env = Lfun.get_macc_s5cmd_env(current_user)
+        if s5cmd_env is None:
+            print(f"Error: missing valid access key format for user '{current_user}'. Check your bashrc (bash_profile).")
+        else:
+            print(f"s5cmd env successfully loaded for '{current_user}'")
+
             s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'                 # find the binary path
             s5cmd_bin = [s5cmd_base, '--endpoint-url', s5cmd_env['S3_ENDPOINT_URL']]     # bundle the endpoint to target Kopah automatically, as entered in our bashrc as https://s3.kopah.uw.edu'
             

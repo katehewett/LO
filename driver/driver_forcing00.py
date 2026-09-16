@@ -30,6 +30,7 @@ to be organized this way.
 """
 
 import sys
+import os
 import argparse
 from datetime import datetime, timedelta
 from subprocess import Popen as Po
@@ -60,6 +61,10 @@ parser.add_argument('-tP', '--trapsP', type=str, default='trapsP00') # LO/pre/tr
 # Specialized flags to send output to kopah.
 parser.add_argument('-k','--to_kopah', default=False, type=Lfun.boolean_string)
 parser.add_argument('-ktest','--test_to_kopah', default=False, type=Lfun.boolean_string)
+# This kopah flag sets the destination bucket in the macc group's kopah storage 
+# that will recieve history files. If you have access to macc group kopah storage, then 
+# Enter your username that is used on klone. Please do not use -kuser pmacc unless you are Kate or Parker. 
+parser.add_argument('-kuser','--kopah_user', type=str, default = None) 
 
 args = parser.parse_args()
 
@@ -69,6 +74,13 @@ for a in ['gridname', 'frc']:
     if argsd[a] == None:
         print('*** Missing required argument for driver_forcing00.py: ' + a)
         sys.exit()
+if (argsd['kopah_user'] == None) and (argsd['to_kopah'] == True) :
+    print('-kuser, kopah_user, is blank. You need to enter your kopah user name for macc storage. \n' \
+    'If you do not have macc storage credentials check with Kate or Parker.')
+    sys.exit()
+if (argsd['kopah_user'] == 'pmacc') and (os.environ.get('USER') not in ('parker', 'pmacc', 'kmhewett','katehewett')):
+    print('Check with Kate or Parker on kopah storage credentials. Do not send to pmacc without checking first. Thanks!')
+    sys.exit()
 
 if args.testing:
     from importlib import reload
