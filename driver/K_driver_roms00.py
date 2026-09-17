@@ -513,23 +513,23 @@ while dt <= dt1:
                 sys.exit()
 
             # if not kate or parker, and kuser does not equal current_user exit 
-            if (current_user not in ('parker', 'pmacc', 'kmhewett', 'katehewett')) and (current_user is not Ldir['kopah_user']):
+            if (current_user not in ('parker', 'pmacc', 'kmhewett', 'katehewett')) and (current_user is not args.kopah_user):
                 print(f"Error: kopah_user and current user do not match. \n \
                 Make sure you are not trying to send to another users kopah storage.") 
                 sys.exit()
 
             # set bucket name if pass tests 
-            if (Ldir['kopah_user'] == 'pmacc'):
+            if (args.kopah_user == 'pmacc'):
                 if (current_user in ('parker', 'pmacc', 'kmhewett', 'katehewett')):
                     bucket_name = 'liveocean-pmacctest'
                     #bucket_name = 'liveocean-pmacc'
-                    print(f"Sending forcing files to kopah bucket: liveocean-pmacc")
+                    print(f"Sending history files to kopah bucket: liveocean-pmacc")
                 else: 
                     print(f"Error: can not send to liveocean-pmacc. Check kopah credentials.")
                     sys.exit()
             else:
-                bucket_name = 'liveocean-' + Ldir['kopah_user']
-                print(f"Sending forcing files to kopah bucket: {bucket_name}")
+                bucket_name = 'liveocean-' + args.kopah_user
+                print(f"Sending history files to kopah bucket: {bucket_name}")
 
             # send to kopah if have credentials:
             if s5cmd_env is None:
