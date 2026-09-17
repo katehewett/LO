@@ -19,7 +19,7 @@ if [[ "$CURRENT_USER" == *"kmhewett"* ]]; then
     echo $indir > /gscratch/macc/kmhewett/LO/driver/wrf_to_kopah.log
     echo "--- Sending to kopah bucket: liveocean-pmacc ---"
     s5cmd_bin=$(command -v s5cmd || echo "/usr/local/bin/s5cmd")
-    $s5cmd_bin sync $indir s3://liveocean-pmacc/LO_data/wrf/$dstr/ >> /gscratch/macc/kmhewett/LO/driver/wrf_to_kopah.log
+    $s5cmd_bin sync $indir s3://liveocean-pmacctest/LO_data/wrf/$dstr/ >> /gscratch/macc/kmhewett/LO/driver/wrf_to_kopah.log
 
 elif [[ "$CURRENT_USER" == *"parker"* ]]; then
     echo "--- Running with macc credentials (User: $CURRENT_USER) ---"
