@@ -53,7 +53,6 @@ def intro():
         sys.exit()
     if (argsd['kopah_user'] == 'pmacc') and (os.environ.get('USER') not in ('parker', 'pmacc', 'kmhewett', 'katehewett')):
         print('Error: Check with Kate or Parker on kopah storage credentials. Do not send to pmacc without checking first.')
-        sys.exit()
 
     # get the dict Ldir
     Ldir = Lfun.Lstart(gridname=args.gridname)

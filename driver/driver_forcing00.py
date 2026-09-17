@@ -143,7 +143,8 @@ while dt <= dt1:
                 '-tP', args.trapsP,
                 '-d', dt.strftime(Lfun.ds_fmt), '-test', str(args.testing),
                 '-test_planB', str(args.test_planB),
-                '-gtx', args.gtagex, '-ro', str(args.roms_out_num), '-do_bio', str(args.do_bio), '-k', str(args.to_kopah)]
+                '-gtx', args.gtagex, '-ro', str(args.roms_out_num), '-do_bio', str(args.do_bio), 
+                '-k', str(args.to_kopah), '-kuser', str(args.kopah_user)]
     proc = Po(cmd_list, stdout=Pi, stderr=Pi)
     stdout, stderr = proc.communicate()
     with open(out_dir / 'Info' / 'screen_output.txt', 'w') as fout:
