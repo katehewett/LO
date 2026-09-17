@@ -521,15 +521,14 @@ while dt <= dt1:
             # set bucket name if pass tests 
             if (args.kopah_user == 'pmacc'):
                 if (current_user in ('parker', 'pmacc', 'kmhewett', 'katehewett')):
-                    bucket_name = 'liveocean-pmacctest'
-                    #bucket_name = 'liveocean-pmacc'
-                    print(f"Sending history files to kopah bucket: liveocean-pmacc")
+                    bucket_name = 'liveocean-pmacc'
                 else: 
                     print(f"Error: can not send to liveocean-pmacc. Check kopah credentials.")
                     sys.exit()
             else:
                 bucket_name = 'liveocean-' + args.kopah_user
-                print(f"Sending history files to kopah bucket: {bucket_name}")
+
+            print(f"Sending history files to kopah bucket: {bucket_name}")
 
             # send to kopah if have credentials:
             if s5cmd_env is None:

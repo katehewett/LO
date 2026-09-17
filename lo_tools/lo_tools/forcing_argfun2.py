@@ -111,15 +111,14 @@ def finale(Ldir, result_dict):
         # set bucket name if pass tests 
         if (Ldir['kopah_user'] == 'pmacc'):
             if (current_user in ('parker', 'pmacc', 'kmhewett', 'katehewett')):
-                bucket_name = 'liveocean-pmacctest'
-                #bucket_name = 'liveocean-pmacc'
-                print(f"Sending forcing files to kopah bucket: liveocean-pmacc")
+                bucket_name = 'liveocean-pmacc'
             else: 
                 print(f"Error: can not send to liveocean-pmacc. Check kopah credentials.")
                 sys.exit()
         else:
             bucket_name = 'liveocean-' + Ldir['kopah_user']
-            print(f"Sending forcing files to kopah bucket: {bucket_name}")
+
+        print(f"Sending forcing files to kopah bucket: {bucket_name}")
 
         # Get Kopah access keys. Calls Lfun function get_s5cmd_env
         # And send forcing files to macc group kopah storage 
