@@ -47,12 +47,6 @@ def intro():
         if argsd[a] == None:
             print('*** Missing required argument to forcing_argfun.intro(): ' + a)
             sys.exit()
-    if (argsd['kopah_user'] is None) and (argsd['to_kopah'] == True):
-        print('Error: -kuser, kopah_user, is blank. Enter your kopah user name for macc storage. \n' \
-        'If you do not have macc storage credentials check with Kate or Parker.')
-        sys.exit()
-    if (argsd['kopah_user'] == 'pmacc') and (os.environ.get('USER') not in ('parker', 'pmacc', 'kmhewett', 'katehewett')):
-        print('Error: Check with Kate or Parker on kopah storage credentials. Do not send to pmacc without checking first.')
 
     # get the dict Ldir
     Ldir = Lfun.Lstart(gridname=args.gridname)
