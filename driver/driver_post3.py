@@ -25,6 +25,9 @@ from time import time, sleep
 
 from lo_tools import Lfun, zfun
 
+# kate added on 18 Sept 2026 (attempt to fix pandas.indexes error)
+sys.modules['pandas.indexes'] = pandas.core.indexes
+
 parser = argparse.ArgumentParser()
 # which run to use
 parser.add_argument('-gtx', '--gtagex', type=str)   # e.g. wgh2_t0_xn0b
