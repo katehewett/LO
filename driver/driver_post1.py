@@ -29,6 +29,7 @@ from time import time, sleep
 from lo_tools import Lfun, zfun
 
 # kate added on 18 Sept 2026 (attempt to fix pandas.indexes error)
+import pandas
 sys.modules['pandas.indexes'] = pandas.core.indexes
 
 parser = argparse.ArgumentParser()
