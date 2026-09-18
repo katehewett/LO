@@ -25,6 +25,17 @@ from datetime import datetime, timedelta
 import pandas as pd
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
+# kate added this if statement on 18 Sept 2026 to deal with daymovie plotting errors. 
+# It checks if the imported pandas module has a top-level indexes attribute. 
+# Older versions of Pandas (prior to 0.20) stored index classes under 
+# pandas.indexes, but modern Pandas moved them internal to pandas.core.indexes
+# Line 23-25 are patches to fix errors that popped up when switching forecast
+# from Parker to Kate. 
+if not hasattr(pd, "indexes"):
+    import pandas.core.indexes as indexes     # Imports the actual module where index classes reside in modern Pandas.
+    sys.modules["pandas.indexes"] = indexes   # Injects the modern module into Python's global module registry (sys.modules) under the legacy name "pandas.indexes".
+
+
 def P1(Q, M):
     fig = plt.figure(figsize=Q['figsize'])
     fs = Q['fontsize']
