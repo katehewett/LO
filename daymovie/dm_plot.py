@@ -37,6 +37,7 @@ import pinfo; reload(pinfo)
 # Line 23-25 are patches to fix errors that popped up when switching forecast
 # from Parker to Kate. 
 import sys
+import pandas as pd 
 if not hasattr(pd, "indexes"):
     import pandas.core.indexes as indexes     # Imports the actual module where index classes reside in modern Pandas.
     sys.modules["pandas.indexes"] = indexes   # Injects the modern module into Python's global module registry (sys.modules) under the legacy name "pandas.indexes".
