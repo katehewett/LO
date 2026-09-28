@@ -162,7 +162,7 @@ s5cmd_env = Lfun.get_macc_s5cmd_env(current_user)
 if s5cmd_env is None:
     print(f"Error: missing valid access key format for user '{current_user}'. Check your bashrc (bash_profile).")
 else:
-    print(f"s5cmd env successfully loaded for '{current_user}'")
+    print(f"s5cmd env loaded for '{current_user}'")
 
 # set time range to process
 if args.run_type == 'forecast':
@@ -528,13 +528,13 @@ while dt <= dt1:
             else:
                 bucket_name = 'liveocean-' + args.kopah_user
 
-            print(f"Sending history files to kopah bucket: {bucket_name}")
+            print(f"History files sent to {bucket_name}")
 
             # send to kopah if have credentials:
             if s5cmd_env is None:
                 print(f"Error: missing valid access key format for user '{current_user}'. Did not transfer to kopah")
             else: 
-                print(f"s5cmd env successfully loaded for '{current_user}'")
+                #print(f"s5cmd env successfully loaded for '{current_user}'")
                 
                 s5cmd_base = shutil.which('s5cmd') or '/usr/local/bin/s5cmd'                 # find the binary path
                 s5cmd_bin = [s5cmd_base, '--endpoint-url', s5cmd_env['S3_ENDPOINT_URL']]     # bundle the endpoint to target Kopah automatically, as entered in our bashrc as https://s3.kopah.uw.edu'
