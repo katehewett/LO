@@ -14,8 +14,8 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 
 # create forecast forcing
 55 02 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_forecast_forcing.sh
-01 04 * * * source ~/.bashrc; cat $LOd/*cas7.log | mail -s 'Kates v2 klone cas7 forcing' pmacc@uw.edu
-02 04 * * * source ~/.bashrc; cat $LOd/*cas7.log | mail -s 'Kates v2 klone cas7 forcing' kmhewett@uw.edu
+01 04 * * * source ~/.bashrc; cat $LOd/*cas7.log | mail -s 'klone cas7 forcing' pmacc@uw.edu
+02 04 * * * source ~/.bashrc; cat $LOd/*cas7.log | mail -s 'klone cas7 forcing' kmhewett@uw.edu
 
 # main forecast
 25 03 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g cas7 -t t2 -x x11b -r forecast -s continuation -grp macc -np 192 -vip True -done c11 -kuser pmacc < /dev/null > $LOd/cas7_forecast.log
@@ -25,10 +25,10 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 # this is now handled by the driver
 # 30 05 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_post1.sh
 # emails
-02 06 * * * source ~/.bashrc; mail -s 'Kates v2 cas7 forecast klone' pmacc@uw.edu < $LOd/cas7_forecast.log
-03 06 * * * source ~/.bashrc; mail -s 'Kates v2 cas7 forecast klone' kmhewett@uw.edu < $LOd/cas7_forecast.log
-51 06 * * * source ~/.bashrc; mail -s 'Kates v2 post_K1' pmacc@uw.edu < $LOd/post_K1.log
-52 06 * * * source ~/.bashrc; mail -s 'Kates v2 post_K1' kmhewett@uw.edu < $LOd/post_K1.log
+10 06 * * * source ~/.bashrc; mail -s 'cas7 forecast klone' pmacc@uw.edu < $LOd/cas7_forecast.log
+11 06 * * * source ~/.bashrc; mail -s 'cas7 forecast klone' kmhewett@uw.edu < $LOd/cas7_forecast.log
+51 06 * * * source ~/.bashrc; mail -s 'post_K1' pmacc@uw.edu < $LOd/post_K1.log
+52 06 * * * source ~/.bashrc; mail -s 'post_K1' kmhewett@uw.edu < $LOd/post_K1.log
 
 # nested forecasts
 
@@ -37,20 +37,20 @@ LOd=/gscratch/macc/kmhewett/LO/driver
 # post processing
 # 00 08 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_post2.sh
 # emails
-02 09 * * * source ~/.bashrc; mail -s 'Kates v2 wgh forecast klone' pmacc@uw.edu < $LOd/wgh2_forecast.log
-03 09 * * * source ~/.bashrc; mail -s 'Kates v2 wgh forecast klone' kmhewett@uw.edu < $LOd/wgh2_forecast.log
-02 11 * * * source ~/.bashrc; mail -s 'Kates v2 post_K2' pmacc@uw.edu < $LOd/post_K2.log
-03 11 * * * source ~/.bashrc; mail -s 'Kates v2 post_K2' kmhewett@uw.edu < $LOd/post_K2.log
+02 09 * * * source ~/.bashrc; mail -s 'wgh forecast klone' pmacc@uw.edu < $LOd/wgh2_forecast.log
+03 09 * * * source ~/.bashrc; mail -s 'wgh forecast klone' kmhewett@uw.edu < $LOd/wgh2_forecast.log
+02 11 * * * source ~/.bashrc; mail -s 'post_K2' pmacc@uw.edu < $LOd/post_K2.log
+03 11 * * * source ~/.bashrc; mail -s 'post_K2' kmhewett@uw.edu < $LOd/post_K2.log
 
 05 09 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g oly2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done o11 -kuser pmacc < /dev/null > $LOd/oly2_forecast.log
 05 19 * * * source ~/.bashrc; python3 $LOd/K_driver_roms00.py -g oly2 -t t2 -x xn11b -r forecast -s continuation -grp macc -np 192 -vip True -done o11 -kuser pmacc < /dev/null > $LOd/oly2_forecast_2.log
 # post processing
 # 00 10 * * * source ~/.bashrc; sbatch -p cpu-g2 -A macc $LOd/K_driver_post3.sh
 # emails
-02 11 * * * source ~/.bashrc; mail -s 'Kates v2 oly forecast klone' pmacc@uw.edu < $LOd/oly2_forecast.log
-03 11 * * * source ~/.bashrc; mail -s 'Kates v2 oly forecast klone' kmhewett@uw.edu < $LOd/oly2_forecast.log
-31 11 * * * source ~/.bashrc; mail -s 'Kates v2 post_K3' pmacc@uw.edu < $LOd/post_K3.log
-32 11 * * * source ~/.bashrc; mail -s 'Kates v2 post_K3' kmhewett@uw.edu < $LOd/post_K3.log
+02 11 * * * source ~/.bashrc; mail -s 'oly forecast klone' pmacc@uw.edu < $LOd/oly2_forecast.log
+03 11 * * * source ~/.bashrc; mail -s 'oly forecast klone' kmhewett@uw.edu < $LOd/oly2_forecast.log
+31 11 * * * source ~/.bashrc; mail -s 'post_K3' pmacc@uw.edu < $LOd/post_K3.log
+32 11 * * * source ~/.bashrc; mail -s 'post_K3' kmhewett@uw.edu < $LOd/post_K3.log
 
 # backup runs of forcing generation
 
