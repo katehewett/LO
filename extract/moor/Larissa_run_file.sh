@@ -5,13 +5,6 @@
 
 LOe=/dat2/kmhewett/LO/extract/moor
 
-python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2015.01.01 -1 2015.12.31 -job CEA_jobs -get_all True > Diaz_cea2.log
-python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2016.01.01 -1 2016.12.31 -job CEA_jobs -get_all True > Diaz_cea3.log
-python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2018.01.01 -1 2018.12.31 -job CEA_jobs -get_all True > Diaz_cea5.log
-python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2019.01.01 -1 2019.12.31 -job CEA_jobs -get_all True > Diaz_cea6.log
-python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2020.01.01 -1 2020.12.31 -job CEA_jobs -get_all True > Diaz_cea7.log
-python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2021.01.01 -1 2021.12.31 -job CEA_jobs -get_all True > Diaz_cea8.log
-python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2022.01.01 -1 2022.12.31 -job CEA_jobs -get_all True > Diaz_cea9.log
 python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2023.01.01 -1 2023.12.31 -job CEA_jobs -get_all True > Diaz_cea10.log
 python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2024.01.01 -1 2024.12.31 -job CEA_jobs -get_all True > Diaz_cea11.log
 python3 $LOe/multi_mooring_driver.py -gtx cas7_t1_x11ab -ro 1 -lt average -0 2025.01.01 -1 2025.12.31 -job CEA_jobs -get_all True > Diaz_cea12.log
