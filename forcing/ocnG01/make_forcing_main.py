@@ -432,7 +432,8 @@ if planB == True:
     B_ds = xr.open_dataset(B_in_fn, decode_times=False)
     tname_list = [item for item in B_ds.coords if 'time' in item]
     for tname in tname_list:
-        ot_vec = B_ds[tname].values
+        #ot_vec = B_ds[tname].values
+        ot_vec = B_ds[tname].values.copy() # kmh added .copy() 16oct2026 becasue was getting read-only error
         ot_vec += 86400
         B_ds.update({tname: ((tname,), ot_vec)})
         B_ds[tname].attrs['units'] = Lfun.roms_time_units
