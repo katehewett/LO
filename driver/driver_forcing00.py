@@ -147,6 +147,9 @@ while dt <= dt1:
                 '-k', str(args.to_kopah), '-kuser', str(args.kopah_user)]
     proc = Po(cmd_list, stdout=Pi, stderr=Pi)
     stdout, stderr = proc.communicate()
+    #kmh edit on 16 October 2026
+    (out_dir / 'Info').mkdir(parents=True, exist_ok=True)
+    #kmh edit end
     with open(out_dir / 'Info' / 'screen_output.txt', 'w') as fout:
         fout.write(stdout.decode())
     if len(stderr) > 0:
