@@ -50,10 +50,10 @@ LOd=/gscratch/macc/$CURRENT_USER/LO/driver
 ds0=$1
 ds1=$2
 
-#python3 $LOd/driver_forcing00.py -g cas7 -r backfill -0 $ds0 -1 $ds1 -f tide01 -k True -kuser pmacc > $LOd/tide01_cas7.log
+python3 $LOd/driver_forcing00.py -g cas7 -r backfill -0 $ds0 -1 $ds1 -f tide01 -k True -kuser pmacc > $LOd/tide01_cas7.log
 
-#python3 $LOd/driver_forcing00.py -g cas7 -r backfill -0 $ds0 -1 $ds1 -f atm02 -k True -kuser pmacc > $LOd/atm02_cas7.log
+python3 $LOd/driver_forcing00.py -g cas7 -r backfill -0 $ds0 -1 $ds1 -f atm02 -k True -kuser pmacc > $LOd/atm02_cas7.log
 
 python3 $LOd/driver_forcing00.py -g cas7 -r backfill -0 $ds0 -1 $ds1 -f ocnG01 -do_bio True -k True -kuser pmacc > $LOd/ocnG01_cas7.log
 
-#python3 $LOd/driver_forcing00.py -g cas7 -r backfill -0 $ds0 -1 $ds1 -tP trapsP01 -f trapsN00 -k True -kuser pmacc > $LOd/trapsN00_cas7.log
+python3 $LOd/driver_forcing00.py -g cas7 -r backfill -0 $ds0 -1 $ds1 -tP trapsP01 -f trapsN00 -k True -kuser pmacc > $LOd/trapsN00_cas7.log
