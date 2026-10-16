@@ -34,8 +34,8 @@
 # source ${conda_source}
 # conda activate loenv
 
-CURRENT_USER=$(whoami)
-source /gscratch/macc/$CURRENT_USER/miniconda3/etc/profile.d/conda.sh
+source /gscratch/macc/$(whoami)/miniconda3/etc/profile.d/conda.sh
+
 conda activate loenv
 
 # KH edit end. 
@@ -50,7 +50,7 @@ export VECLIB_MAXIMUM_THREADS=$SLURM_CPUS_PER_TASK
 export NUMEXPR_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # KH edit start.
-LOd=/gscratch/macc/$CURRENT_USER/LO/driver
+LOd=/gscratch/macc/$(whoami)/LO/driver
 # KH edit end.
 
 # rename command line arguments
