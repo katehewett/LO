@@ -47,8 +47,8 @@ export NUMEXPR_NUM_THREADS=$SLURM_CPUS_PER_TASK
 LOd=/gscratch/macc/$CURRENT_USER/LO/driver
 
 # rename command line arguments
-ds0=$2
-ds1=$3
+ds0=$1
+ds1=$2
 
 python3 $LOd/driver_forcing00.py -g cas7 -r backfill -0 $ds0 -1 $ds1 -f tide01 -k True -kuser pmacc > $LOd/tide01_cas7.log
 
