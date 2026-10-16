@@ -294,8 +294,32 @@ while dt <= dt1:
             if force == 'open':
                 pass
             else:
+                # if no kopah_user exit
+                if (args.kopah_user is None):
+                    print(f"Error: -kuser, kopah_user, is blank. Enter your kopah user name for macc storage. \n \
+                    If you do not have macc storage credentials check with Kate or Parker.")
+
+                # if not kate or parker, and kuser does not equal current_user exit 
+                if (current_user not in ('parker', 'pmacc', 'kmhewett', 'katehewett')) and (current_user is not args.kopah_user):
+                    print(f"Error: kopah_user and current user do not match. \n \
+                    Make sure you are not trying to send to another users kopah storage.") 
+                    sys.exit()
+
+                # set bucket name if pass tests 
+                if (args.kopah_user == 'pmacc'):
+                    if (current_user in ('parker', 'pmacc', 'kmhewett', 'katehewett')):
+                        bucket_name = 'liveocean-pmacc'
+                    else: 
+                        print(f"Error: can not send to liveocean-pmacc. Check kopah credentials.")
+                        sys.exit()
+                else:
+                    bucket_name = 'liveocean-' + args.kopah_user
+
+                print(f"Forcing files from {bucket_name}")
+
+                # grabbing from kopah if have credentials:
                 force_choice = force_dict[force]
-                bucket_name = 'liveocean-' + Ldir['local_user']  
+                #bucket_name = 'liveocean-' + Ldir['local_user']  
                 #cmd_list = ['s5cmd','sync',
                 #    's3://'+bucket_name+'/LO_output/forcing/'+Ldir['gridname']+'/'+f_string+'/'+force_choice+'/*',
                 #    str(force_dir)+'/'+force_choice+'/']
