@@ -29,9 +29,16 @@
 
 #SBATCH --job-name='frc_back'
 
+# KH edit start. This isn't working on my machine 
 # We defined and exported conda_source and LOd in .bashrc
-source ${conda_source}
+# source ${conda_source}
+# conda activate loenv
+
+CURRENT_USER=$(whoami)
+source /gscratch/macc/$CURRENT_USER/miniconda3/etc/profile.d/conda.sh
 conda activate loenv
+
+# KH edit end. 
 
 # These exports, along with the cpus-per-task set above
 # (and workers=10 in the nearest neighbor code, e.g. in tracker2)
@@ -41,6 +48,10 @@ export OPENBLAS_NUM_THREADS=$SLURM_CPUS_PER_TASK # For OpenBLAS
 export MKL_NUM_THREADS=$SLURM_CPUS_PER_TASK      # For Intel MKL
 export VECLIB_MAXIMUM_THREADS=$SLURM_CPUS_PER_TASK
 export NUMEXPR_NUM_THREADS=$SLURM_CPUS_PER_TASK
+
+# KH edit start.
+LOd=/gscratch/macc/$CURRENT_USER/LO/driver
+# KH edit end.
 
 # rename command line arguments
 gridname=$1
