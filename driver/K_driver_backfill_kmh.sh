@@ -36,4 +36,3 @@ export NUMEXPR_NUM_THREADS=$SLURM_CPUS_PER_TASK
 LOd=/gscratch/macc/$CURRENT_USER/LO/driver
 
 python3 $LOd/K_driver_roms00.py -g cas7 -t t2 -x x11b -r backfill -0 2026.10.15 -s continuation -grp macc -np 192 -vip True -kuser pmacc < /dev/null > $LOd/cas7_backfill.log 
-python3 $LOd/driver_post1.py -gtx cas7_t2_x11b -ro 0 -r forecast < /dev/null > $LOd/post_K1.log
